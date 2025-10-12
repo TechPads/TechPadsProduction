@@ -13,7 +13,7 @@ public class ProductType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TYPECODE", nullable = false)
+    @Column(name = "TYPECODE")
     private Long typeCode;
 
     @Column(name = "TYPENAME", nullable = false, length = 100)
