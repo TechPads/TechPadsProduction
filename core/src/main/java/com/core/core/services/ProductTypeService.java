@@ -9,5 +9,5 @@ public interface ProductTypeService {
     ProductType getProductType(Long code);
     ProductType saveProductType(ProductType productType);
     ProductType updateProductType(Long code, ProductType productType);
-    void deleteProductType(Long code);
+    boolean deleteProductType(Long code);
 }

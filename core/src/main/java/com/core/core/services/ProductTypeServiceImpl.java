@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Lazy
@@ -44,8 +45,14 @@ public class ProductTypeServiceImpl implements ProductTypeService {
                         "Tipo de producto no encontrado con código " + code));
     }
 
-    public void deleteProductType(Long code){
-        productTypeRepository.deleteById(code);
+    @Override
+    public boolean deleteProductType(Long code) {
+        Optional<ProductType> existing = productTypeRepository.findById(code);
+        if (existing.isPresent()) {
+            productTypeRepository.deleteById(code);
+            return true;
+        }
+        return false;
     }
 }
 

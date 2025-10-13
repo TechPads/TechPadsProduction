@@ -36,4 +36,63 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROTYPE", nullable = false)
     private ProductType productType;
+
+    //Setters & Getters
+
+
+    public Long getProCode() {
+        return proCode;
+    }
+
+    public void setProCode(Long proCode) {
+        this.proCode = proCode;
+    }
+
+    public String getProName() {
+        return proName;
+    }
+
+    public void setProName(String proName) {
+        this.proName = proName;
+    }
+
+    public String getProImg() {
+        return proImg;
+    }
+
+    public void setProImg(String proImg) {
+        this.proImg = proImg;
+    }
+
+    public BigDecimal getProPrice() {
+        return proPrice;
+    }
+
+    public void setProPrice(BigDecimal proPrice) {
+        this.proPrice = proPrice;
+    }
+
+    public String getDescript() {
+        return descript;
+    }
+
+    public void setDescript(String descript) {
+        this.descript = descript;
+    }
+
+    public String getProMark() {
+        return proMark;
+    }
+
+    public void setProMark(String proMark) {
+        this.proMark = proMark;
+    }
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
 }

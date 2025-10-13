@@ -4,8 +4,12 @@ import com.core.core.modules.ProductType;
 import com.core.core.services.ProductTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -17,27 +21,61 @@ public class ProductTypeController {
     private ProductTypeService productTypeService;
 
     @GetMapping
-    public List<ProductType> getProductTypes() {
-        return productTypeService.getProductTypes();
+    public ResponseEntity<List<ProductType>> getProductTypes() {
+        List<ProductType> productTypes = productTypeService.getProductTypes();
+        if (productTypes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productTypes);
     }
 
     @GetMapping("/{code}")
-    public ProductType getProductType(@PathVariable Long code) {
-        return productTypeService.getProductType(code);
+    public ResponseEntity<?> getProductType(@PathVariable Long code) {
+        ProductType productType = productTypeService.getProductType(code);
+        if (productType == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Tipo de producto no encontrado con código: " + code);
+        }
+        return ResponseEntity.ok(productType);
     }
 
     @PostMapping
-    public ProductType addProductType(@RequestBody ProductType productType) {
-        return productTypeService.saveProductType(productType);
+    public ResponseEntity<?> postProductType(@RequestBody ProductType productType) {
+        ProductType created = productTypeService.saveProductType(productType);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{code}")
+                .buildAndExpand(created.getTypeCode())
+                .toUri();
+
+        return ResponseEntity.created(location).body(created);
     }
 
     @PutMapping("/{code}")
-    public ProductType updateProductType(@PathVariable Long code, @RequestBody ProductType productType) {
-        return productTypeService.updateProductType(code, productType);
+    public ResponseEntity<?> putProductType(
+            @PathVariable Long code,
+            @RequestBody ProductType productType
+    ) {
+        ProductType updated = productTypeService.updateProductType(code, productType);
+
+        if (updated == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró tipo de producto con código: " + code);
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{code}")
-    public void deleteProductType(@PathVariable Long code) {
-        productTypeService.deleteProductType(code);
+    public ResponseEntity<?> deleteProductType(@PathVariable Long code) {
+        boolean deleted = productTypeService.deleteProductType(code);
+
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró tipo de producto con código: " + code);
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
