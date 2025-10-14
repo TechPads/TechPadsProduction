@@ -8,11 +8,11 @@ import lombok.*;
 @Entity
 @Table(name = "PRODUCTTYPE")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProductType {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,8 @@ public class ProductType {
     @Column(name = "TYPENAME", nullable = false, length = 100)
     private String typeName;
 
+    public ProductType() {
+    }
 
     public Long getTypeCode() {
         return typeCode;
