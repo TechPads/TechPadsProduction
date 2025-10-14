@@ -1,1 +1,170 @@
-<p>principal works!</p>
+<div class="main-container">
+  <div class="hero">
+    <img
+      src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=2000&q=80"
+      alt="Tech Setup"
+      class="hero-img"
+    />
+  </div>
+
+  <div class="bottom-bar">
+    <h1 class="title">TechPads</h1>
+    <div class="actions">
+      <button class="btn-ingresar" (click)="toggleLogin()">
+        Ingresar
+      </button>
+      <p class="register-text">
+        ¿No tienes cuenta? <a href="#" (click)="toggleRegister(); $event.preventDefault()">Regístrate</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal Login -->
+  <div class="modal" *ngIf="showLogin" (click)="toggleLogin()">
+    <div class="modal-content modal-login" (click)="$event.stopPropagation()">
+      <h2>INGRESAR</h2>
+      
+      <div class="input-label">
+        <label>UserName</label>
+        <input type="text" placeholder="UserName" />
+      </div>
+      
+      <div class="input-label">
+        <label>Contraseña</label>
+        <input type="password" placeholder="Contraseña" />
+      </div>
+      
+      <button class="btn-entrar">Entrar</button>
+      
+      <p class="register-link">
+        ¿No tienes cuenta? <a href="#" (click)="openRegisterFromLogin(); $event.preventDefault()">Regístrate</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal Registro -->
+  <div class="modal" *ngIf="showRegister" (click)="toggleRegister()">
+    <div class="modal-content modal-register" (click)="$event.stopPropagation()">
+      
+      <!-- Columna Izquierda -->
+      <div class="register-left">
+        <div class="register-illustration">
+          <svg viewBox="0 0 200 200" class="illustration-svg">
+            <!-- Ilustración simplificada -->
+            <circle cx="60" cy="60" r="30" fill="#3B82F6" opacity="0.2"/>
+            <rect x="30" y="100" width="140" height="80" rx="10" fill="#3B82F6" opacity="0.3"/>
+            <circle cx="170" cy="30" r="15" fill="#3B82F6"/>
+            <rect x="20" y="20" width="40" height="50" rx="5" fill="#E0E7FF"/>
+          </svg>
+        </div>
+        <h3>Una cuenta, toda tu tienda</h3>
+        <p class="register-subtitle">¡Regístrate y consigue todo lo que necesitas desde un solo portal!</p>
+        
+        <ul class="benefits-list">
+          <li>
+            <span class="icon">🛒</span>
+            <span>Compra tus componentes fácilmente</span>
+          </li>
+          <li>
+            <span class="icon">📦</span>
+            <span>Haz seguimiento de tus pedidos</span>
+          </li>
+          <li>
+            <span class="icon">🔄</span>
+            <span>Gestiona cambios y devoluciones</span>
+          </li>
+          <li>
+            <span class="icon">📄</span>
+            <span>Descarga tus facturas al instante</span>
+          </li>
+          <li>
+            <span class="icon">⭐</span>
+            <span>Obtén descuentos y promociones exclusivas</span>
+          </li>
+          <li>
+            <span class="icon">🔔</span>
+            <span>Mantente informado de las últimas novedades</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Columna Derecha -->
+      <div class="register-right">
+        <h2>Registrarse</h2>
+        
+        <div class="form-grid">
+          <div class="input-label">
+            <label>Primer nombre*:</label>
+            <input type="text" placeholder="" />
+          </div>
+          
+          <div class="input-label">
+            <label>Segundo nombre:</label>
+            <input type="text" placeholder="" />
+          </div>
+          
+          <div class="input-label">
+            <label>Primer apellido*:</label>
+            <input type="text" placeholder="" />
+          </div>
+          
+          <div class="input-label">
+            <label>Segundo apellido:</label>
+            <input type="text" placeholder="" />
+          </div>
+          
+          <div class="input-label full-width">
+            <label>Correo*:</label>
+            <input type="email" placeholder="" />
+          </div>
+          
+          <div class="input-label full-width">
+            <label>Contraseña*:</label>
+            <input type="password" placeholder="" />
+          </div>
+          
+          <div class="input-label full-width">
+            <label>Username*:</label>
+            <input type="text" placeholder="" />
+          </div>
+          
+          <div class="input-label full-width">
+            <label>Telefono*:</label>
+            <input type="tel" placeholder="" />
+          </div>
+          
+          <div class="input-label address-group">
+            <label>Direccion:</label>
+            <select>
+              <option value="">Dirección</option>
+              <option value="calle">Calle</option>
+              <option value="carrera">Carrera</option>
+            </select>
+            <input type="text" placeholder="" class="address-input" />
+          </div>
+          
+          <div class="input-label">
+            <label>Departamento</label>
+            <select>
+              <option value="">Departamento</option>
+              <option value="antioquia">Antioquia</option>
+              <option value="cundinamarca">Cundinamarca</option>
+            </select>
+          </div>
+          
+          <div class="input-label">
+            <label>Ciudad</label>
+            <select>
+              <option value="">Ciudad</option>
+              <option value="medellin">Medellín</option>
+              <option value="bogota">Bogotá</option>
+            </select>
+          </div>
+        </div>
+        
+        <button class="btn-registrarse">Registrarse</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
