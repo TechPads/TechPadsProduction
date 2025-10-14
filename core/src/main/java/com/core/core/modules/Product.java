@@ -37,6 +37,9 @@ public class Product {
     @JoinColumn(name = "PROTYPE", nullable = false)
     private ProductType productType;
 
+    public Product() {
+    }
+
     //Setters & Getters
 
 

@@ -40,7 +40,7 @@ public class ProductTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postProductType(@RequestBody ProductType productType) {
+    public ResponseEntity<?> createProductType(@RequestBody ProductType productType) {
         ProductType created = productTypeService.saveProductType(productType);
 
         URI location = ServletUriComponentsBuilder
@@ -53,10 +53,7 @@ public class ProductTypeController {
     }
 
     @PutMapping("/{code}")
-    public ResponseEntity<?> putProductType(
-            @PathVariable Long code,
-            @RequestBody ProductType productType
-    ) {
+    public ResponseEntity<?> putProductType(@PathVariable Long code, @RequestBody ProductType productType) {
         ProductType updated = productTypeService.updateProductType(code, productType);
 
         if (updated == null) {

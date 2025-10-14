@@ -24,4 +24,39 @@ public class Provider {
 
     @Column(name = "PROVPHONE", nullable = false, length = 10)
     private String provPhone;
+
+    public Provider() {
+    }
+
+    public Long getProvId() {
+        return provId;
+    }
+
+    public void setProvId(Long provId) {
+        this.provId = provId;
+    }
+
+    public String getProvEmail() {
+        return provEmail;
+    }
+
+    public void setProvEmail(String provEmail) {
+        this.provEmail = provEmail;
+    }
+
+    public String getProvName() {
+        return provName;
+    }
+
+    public void setProvName(String provName) {
+        this.provName = provName;
+    }
+
+    public String getProvPhone() {
+        return provPhone;
+    }
+
+    public void setProvPhone(String provPhone) {
+        this.provPhone = provPhone;
+    }
 }

@@ -2,7 +2,6 @@ package com.core.core.services;
 
 import com.core.core.modules.ProductType;
 import com.core.core.repository.ProductTypeRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
