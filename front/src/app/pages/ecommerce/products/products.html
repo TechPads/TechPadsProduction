@@ -69,7 +69,7 @@
               <rect x="14" y="14" width="7" height="7"></rect>
               <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
-            <span>Productos</span>
+            <span>Categorías</span>
           </div>
           <svg class="chevron" [class.rotate]="categoriaExpandida" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -77,12 +77,12 @@
         </div>
         
         <div class="submenu" [class.open]="categoriaExpandida">
-          <a href="#" class="submenu-item">Gabinetes</a>
-          <a href="#" class="submenu-item">Tarjetas gráficas</a>
-          <a href="#" class="submenu-item">Memorias RAM</a>
-          <a href="#" class="submenu-item">Portátiles</a>
-          <a href="#" class="submenu-item">Monitores</a>
+          <a href="#" class="submenu-item">Smartphones</a>
+          <a href="#" class="submenu-item">Laptops</a>
           <a href="#" class="submenu-item">Accesorios</a>
+          <a href="#" class="submenu-item">Monitores</a>
+          <a href="#" class="submenu-item">Audio</a>
+          <a href="#" class="submenu-item">Redes</a>
         </div>
       </nav>
     </aside>
@@ -107,26 +107,16 @@
       <div class="products-grid">
         <div class="product-card" *ngFor="let producto of productos">
           <div class="product-image">
-            <img [src]="producto.imagen" [alt]="producto.nombre">
-            <button class="favorite-btn" 
-                    [class.active]="producto.favorito"
-                    (click)="toggleFavorito(producto)">
-              <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="producto.favorito ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-              </svg>
-            </button>
+            <img [src]="producto.proImg" [alt]="producto.proName">
           </div>
           
           <div class="product-info">
-            <h3 class="product-name">{{ producto.nombre }}</h3>
+            <h3 class="product-name">{{ producto.proName }}</h3>
+            <p class="product-description">{{ producto.descript }}</p>
+            <p class="product-mark">Marca: {{ producto.proMark }}</p>
+            <p class="product-type">Categoría: {{ producto.productType.typeName }}</p>
             <div class="product-footer">
-              <span class="product-price">{{ formatPrecio(producto.precio) }}</span>
-              <div class="product-colors" *ngIf="producto.colores.length > 0">
-                <span class="color-dot" 
-                      *ngFor="let color of producto.colores"
-                      [style.background-color]="color === 'red' ? '#ef4444' : color === 'blue' ? '#3b82f6' : '#ec4899'">
-                </span>
-              </div>
+              <span class="product-price">{{ formatPrecio(producto.proPrice) }}</span>
             </div>
           </div>
         </div>
