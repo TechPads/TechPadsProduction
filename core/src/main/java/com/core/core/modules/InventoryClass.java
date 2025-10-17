@@ -21,7 +21,7 @@ public class InventoryClass {
     @Column(name = "INVSTOCK", nullable = false)
     private Integer invStock;
 
-    @Column(name = "sellingprice")
+    @Column(name = "SELLINGPRICE", nullable = false)
     private BigDecimal sellingPrice;
 
     @Column(name = "INVDATE", nullable = false)
