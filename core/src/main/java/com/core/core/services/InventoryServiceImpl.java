@@ -1,0 +1,66 @@
+package com.core.core.services;
+
+import com.core.core.modules.InventoryClass;
+import com.core.core.repository.InventoryRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class InventoryServiceImpl implements InventoryService {
+
+    private final InventoryRepository inventoryRepository;
+
+    public InventoryServiceImpl(InventoryRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
+    }
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<InventoryClass> getAllInventory(){
+        return inventoryRepository.findAll();
+    }
+
+    @Override
+    public InventoryClass getInventory(Long code){
+        return  inventoryRepository.findById(code)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado " + code));
+    }
+
+    @Override
+    public InventoryClass createInventory(InventoryClass inventoryClass){
+        return inventoryRepository.save(inventoryClass);
+    }
+
+    @Override
+    public InventoryClass updateInventory(Long code, InventoryClass inventoryClass){
+        InventoryClass inventory = inventoryRepository.findById(code)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado " + code));
+
+        inventory.setProvider(inventoryClass.getProvider());
+        inventory.setInvDate(inventoryClass.getInvDate());
+        inventory.setSellingPrice(inventoryClass.getSellingPrice());
+        inventory.setInvStock(inventoryClass.getInvStock());
+        inventory.setProduct(inventoryClass.getProduct());
+
+        return inventoryRepository.save(inventory);
+    }
+
+
+    @Override
+    public boolean deleteInventory(Long code){
+        Optional<InventoryClass> inventory = inventoryRepository.findById(code);
+
+        if(inventory.isPresent()){
+            inventoryRepository.deleteById(code);
+            return true;
+        }
+        return false;
+    }
+}

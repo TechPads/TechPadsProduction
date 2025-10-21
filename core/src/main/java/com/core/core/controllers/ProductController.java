@@ -43,7 +43,7 @@ public class ProductController {
     }
 
 
-    @PutMapping
+    @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody Product product) {
         Product newProduct = productService.createProduct(product);
 
