@@ -20,46 +20,49 @@ public class ProductController {
     @Lazy
     private ProductService productService;
 
-    //SECCION NORMAL
+    // SECCION NORMAL
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getProducts();
-        if(products.isEmpty()) {
+        if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(products);
     }
 
-
     @GetMapping("/{code}")
     public ResponseEntity<?> getProduct(@PathVariable Long code) {
         Product product = productService.getProduct(code);
-        if(product == null) {
+        if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se encontro el producto con el codigo: " + code);
         }
         return ResponseEntity.ok(product);
     }
 
-
-    @PutMapping
+    @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        Product newProduct = productService.createProduct(product);
+        try {
+            Product newProduct = productService.createProduct(product);
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{code}")
+                    .buildAndExpand(newProduct.getProCode())
+                    .toUri();
+            return ResponseEntity.created(location).body(newProduct);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{code}")
-                .buildAndExpand(newProduct.getProCode())
-                .toUri();
-        return ResponseEntity.created(location).body(newProduct);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
     @PutMapping("/{code}")
     public ResponseEntity<?> updateProduct(@PathVariable Long code, @RequestBody Product product) {
         Product updProduct = productService.updateProduct(code, product);
 
-        if(updProduct == null) {
+        if (updProduct == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se encontro el producto con el codigo: " + code);
         }
@@ -70,18 +73,18 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long code) {
         boolean deleted = productService.deleteProduct(code);
 
-        if(!deleted) {
+        if (!deleted) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se encontro el producto con el codigo: " + code);
         }
         return ResponseEntity.noContent().build();
     }
 
-    //SECCION CON PL/SQL
+    // SECCION CON PL/SQL
 
     @PostMapping("/plsql")
     public ResponseEntity<?> createProductPlSQL(@RequestBody Product product) {
-        try{
+        try {
             productService.crearProductoProcedure(product);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(product);
