@@ -14,7 +14,7 @@
           <path d="m21 21-4.35-4.35"></path>
         </svg>
       </button>
-      <button class="icon-btn profile-btn">
+      <button class="icon-btn profile-btn" (click)="goToAdmin()">
         <div class="avatar"></div>
       </button>
       <button class="icon-btn cart-btn">
@@ -77,12 +77,19 @@
         </div>
         
         <div class="submenu" [class.open]="categoriaExpandida">
-          <a href="#" class="submenu-item">Smartphones</a>
-          <a href="#" class="submenu-item">Laptops</a>
-          <a href="#" class="submenu-item">Accesorios</a>
-          <a href="#" class="submenu-item">Monitores</a>
-          <a href="#" class="submenu-item">Audio</a>
-          <a href="#" class="submenu-item">Redes</a>
+          <a href="#" 
+             class="submenu-item" 
+             [class.active]="selectedTypeId === null"
+             (click)="filterByType(null); $event.preventDefault()">
+            Todos los productos
+          </a>
+          <a href="#" 
+             *ngFor="let type of productTypes" 
+             class="submenu-item"
+             [class.active]="selectedTypeId === type.typeId"
+             (click)="filterByType(type.typeId); $event.preventDefault()">
+            {{ type.typeName }}
+          </a>
         </div>
       </nav>
     </aside>
