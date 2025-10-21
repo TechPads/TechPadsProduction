@@ -37,7 +37,6 @@ export class CreateProductComponent implements OnInit {
    
     this.productService.getProductTypes().subscribe({
       next: (types: ProductType[]) => {
-        console.log('🧩 Tipos recibidos:', types);
         this.productTypes = types;
         this.loadingTypes = false;
       },

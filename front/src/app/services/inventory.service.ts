@@ -57,7 +57,7 @@ export class InventoryService {
   }
 
   getProductTypes(): Observable<ProductType[]> {
-    return this.http.get<ProductType[]>(`${this.apiUrl}/productTypes`);
+    return this.http.get<ProductType[]>(`${this.apiUrl}/prodType`);
   }
 
   getInventoryItem(invCode: number): Observable<InventoryItem> {
