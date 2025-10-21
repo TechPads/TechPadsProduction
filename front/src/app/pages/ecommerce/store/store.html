@@ -112,18 +112,18 @@
 
       <!-- Products Grid -->
       <div class="products-grid">
-        <div class="product-card" *ngFor="let producto of productos">
+        <div class="product-card" *ngFor="let item of inventoryItems">
           <div class="product-image">
-            <img [src]="producto.proImg" [alt]="producto.proName">
+            <img [src]="item.product.proImg" [alt]="item.product.proName">
           </div>
           
           <div class="product-info">
-            <h3 class="product-name">{{ producto.proName }}</h3>
-            <p class="product-description">{{ producto.descript }}</p>
-            <p class="product-mark">Marca: {{ producto.proMark }}</p>
-            <p class="product-type">Categoría: {{ producto.productType.typeName }}</p>
+            <h3 class="product-name">{{ item.product.proName }}</h3>
+            <p class="product-description">{{ item.product.descript }}</p>
+            <p class="product-mark">Marca: {{ item.product.proMark }}</p>
+            <p class="product-type">Categoría: {{ item.product.productType.typeName }}</p>
             <div class="product-footer">
-              <span class="product-price">{{ formatPrecio(producto.proPrice) }}</span>
+              <span class="product-price">{{ formatPrice(item.sellingPrice) }}</span>
             </div>
           </div>
         </div>

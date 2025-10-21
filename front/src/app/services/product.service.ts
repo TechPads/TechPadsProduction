@@ -39,8 +39,9 @@ export class ProductService {
   }
 
   createProduct(product: Product): Observable<Product> {
-    console.log('🟡 Datos listos para enviar:', product);
-
     return this.http.post<Product>(`${this.apiUrl}/product`, product);
+  }
+  editProduct(product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/product/${product.proCode}`, product);
   }
 }

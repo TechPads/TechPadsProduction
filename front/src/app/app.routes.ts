@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { Principal } from './pages/ecommerce/principal/principal';
-import { Products } from './pages/ecommerce/products/products';
+import { StoreComponent } from './pages/ecommerce/store/store';
 import { AdminLayoutComponent } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: Principal },
-  { path: 'products', component: Products },
+  { path: 'store', component: StoreComponent },
   {
     path: 'admin',
     component: AdminLayoutComponent,

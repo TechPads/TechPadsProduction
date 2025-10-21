@@ -1,0 +1,78 @@
+<div class="form-container">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form" novalidate>
+    <h2>Crear producto</h2>
+
+    
+
+    <!-- Nombre -->
+    <label>Nombre</label>
+    <input formControlName="proName" type="text" placeholder="Ej: iPhone 15 Pro" />
+    <div *ngIf="submitted && productForm.controls['proName'].invalid" class="error-message">
+      <small>El nombre es obligatorio.</small>
+    </div>
+
+    <!-- Descripción -->
+    <label>Descripción</label>
+    <textarea formControlName="descript" placeholder="Describe el producto..."></textarea>
+    <div *ngIf="submitted && productForm.controls['descript'].invalid" class="error-message">
+      <small>La descripción es obligatoria.</small>
+    </div>
+
+    <!-- Marca -->
+    <label>Marca</label>
+    <input formControlName="proMark" type="text" placeholder="Ej: Apple" />
+    <div *ngIf="submitted && productForm.controls['proMark'].invalid" class="error-message">
+      <small>La marca es obligatoria.</small>
+    </div>
+
+    <!-- Precio -->
+    <label>Precio</label>
+    <input formControlName="proPrice" type="number" placeholder="Ej: 5999" />
+    <div *ngIf="submitted && productForm.controls['proPrice'].invalid" class="error-message">
+      <small>El precio debe ser mayor que 0.</small>
+    </div>
+
+    <!-- Tipo -->
+<label>Tipo</label>
+<select formControlName="typeCode">
+  <option value="">Selecciona tipo</option>
+  <option *ngFor="let type of productTypes" [value]="type.typeCode">
+    {{ type.typeName }}
+  </option>
+</select>
+<div *ngIf="submitted && productForm.controls['typeCode'].invalid" class="error-message">
+  <small>Selecciona un tipo de producto.</small>
+</div>
+
+
+    <!-- Imagen -->
+    <label>URL Imagen</label>
+    <input formControlName="proImg" type="text" placeholder="https://imagen.com/ejemplo.jpg" />
+    <div *ngIf="submitted && productForm.controls['proImg'].invalid" class="error-message">
+      <small>La URL de imagen es obligatoria.</small>
+    </div>
+
+    <button type="submit">Guardar producto</button>
+  </form>
+
+  <div class="preview" *ngIf="previewImage">
+    <img [src]="previewImage" alt="Vista previa del producto" />
+  </div>
+</div>
+
+<!-- TOAST -->
+<div *ngIf="showToast" class="toast" [ngClass]="toastType">
+  <img
+    *ngIf="toastType === 'success'"
+    class="toast-icon"
+    src="https://cdn-icons-png.flaticon.com/512/845/845646.png"
+    alt="Éxito"
+  />
+  <img
+    *ngIf="toastType === 'error'"
+    class="toast-icon"
+    src="https://cdn-icons-png.flaticon.com/512/463/463612.png"
+    alt="Error"
+  />
+  <p>{{ toastMessage }}</p>
+</div>
