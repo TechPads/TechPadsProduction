@@ -1,6 +1,5 @@
 package com.core.core.services;
 
-
 import com.core.core.modules.Product;
 import com.core.core.repository.ProductRepository;
 import jakarta.persistence.EntityManager;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
@@ -24,7 +23,7 @@ public class ProductServiceImpl implements ProductService{
     @PersistenceContext
     private EntityManager entityManager;
 
-    //Metodos normales con JPA
+    // Metodos normales con JPA
     @Override
     public List<Product> getProducts() {
         return productRepository.findAll();
@@ -38,6 +37,22 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product createProduct(Product product) {
+        if (product.getProCode() != null && productRepository.existsById(product.getProCode())) {
+            throw new RuntimeException("Ya existe un producto con el código " + product.getProCode());
+        }
+
+        if (product.getProCode() == null) {
+            Long nextCode = 1L;
+            Optional<Long> maxCode = productRepository.findAll()
+                    .stream()
+                    .map(Product::getProCode)
+                    .max(Long::compareTo);
+            if (maxCode.isPresent()) {
+                nextCode = maxCode.get() + 1;
+            }
+            product.setProCode(nextCode);
+        }
+
         return productRepository.save(product);
     }
 
@@ -66,7 +81,7 @@ public class ProductServiceImpl implements ProductService{
         return false;
     }
 
-    //Metodos utilizando PL/SQL
+    // Metodos utilizando PL/SQL
     @Override
     public void crearProductoProcedure(Product product) {
         productRepository.crearProducto(
@@ -76,8 +91,7 @@ public class ProductServiceImpl implements ProductService{
                 product.getProPrice(),
                 product.getProductType().getTypeCode(),
                 product.getDescript(),
-                product.getProMark()
-        );
+                product.getProMark());
     }
 
     public void modificarProductoProcedure(Long code, Product product) {
@@ -88,8 +102,7 @@ public class ProductServiceImpl implements ProductService{
                 product.getProPrice(),
                 product.getProductType().getTypeCode(),
                 product.getDescript(),
-                product.getProMark()
-        );
+                product.getProMark());
     }
 
     @Override
