@@ -1,0 +1,94 @@
+<div class="admin-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-actions">
+      <button class="icon-btn profile-btn" (click)="goTo('/admin/dashboard')" aria-label="Perfil">
+        <div class="avatar"></div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Panel Admin</h2>
+      </div>
+
+      <nav class="sidebar-nav">
+        <!-- Tienda -->
+        <a 
+          [routerLink]="['/products']"
+          class="nav-item"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Tienda</span>
+        </a>
+
+        <!-- Mi cuenta -->
+        <a 
+          [routerLink]="['/admin/dashboard']"
+          class="nav-item"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Mi Cuenta</span>
+        </a>
+
+        <!-- Inventario expandible -->
+        <div class="nav-item expandable" (click)="toggleInventario()">
+          <div class="nav-item-content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>Inventario</span>
+          </div>
+          <svg class="chevron" [class.rotate]="inventarioExpanded" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="submenu" [class.open]="inventarioExpanded">
+          <a [routerLink]="['/admin/inventory/register']" class="submenu-item" routerLinkActive="active">Registrar lote</a>
+          <a [routerLink]="['/admin/inventory/query']" class="submenu-item" routerLinkActive="active">Consultar inventario</a>
+          <a [routerLink]="['/admin/inventory/edit']" class="submenu-item" routerLinkActive="active">Modificar inventario</a>
+        </div>
+
+        <!-- Productos expandible -->
+        <div class="nav-item expandable" (click)="toggleProductos()">
+          <div class="nav-item-content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 13V7a2 2 0 0 0-2-2h-3V3H9v2H6a2 2 0 0 0-2 2v6H1v8h22v-8z"></path>
+            </svg>
+            <span>Productos</span>
+          </div>
+          <svg class="chevron" [class.rotate]="productosExpanded" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="submenu" [class.open]="productosExpanded">
+          <a [routerLink]="['/admin/products/create']" class="submenu-item" routerLinkActive="active">Crear</a>
+          <a [routerLink]="['/admin/products/edit']" class="submenu-item" routerLinkActive="active">Modificar</a>
+          <a [routerLink]="['/admin/products/delete']" class="submenu-item" routerLinkActive="active">Eliminar</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

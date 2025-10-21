@@ -5,27 +5,42 @@ import { Observable } from 'rxjs';
 export interface ProductType {
   typeCode: number;
   typeName: string;
+  typeDescrip: string;
 }
 
 export interface Product {
-  proCode: number;
+  proCode: number; 
   proName: string;
-  proImg: string;
-  proPrice: number;
   descript: string;
+  proImg: string;
   proMark: string;
+  proPrice: number;
   productType: ProductType;
 }
 
 @Injectable({
-  providedIn: 'root'   
+  providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:8080/techPads/store/v1/product';
+  private apiUrl = 'http://localhost:8080/techPads/store/v1';
 
   constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl);
+    return this.http.get<Product[]>(`${this.apiUrl}/product`);
+  }
+
+  getProductTypes(): Observable<ProductType[]> {
+    return this.http.get<ProductType[]>(`${this.apiUrl}/prodType`);
+  }
+
+  getProductsByType(typeId: number): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.apiUrl}/product?typeId=${typeId}`);
+  }
+
+  createProduct(product: Product): Observable<Product> {
+    console.log('🟡 Datos listos para enviar:', product);
+
+    return this.http.post<Product>(`${this.apiUrl}/product`, product);
   }
 }
