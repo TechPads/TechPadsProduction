@@ -11,7 +11,7 @@ public class CityServiceImpl implements CityService {
 
     private final CityRepository cityRepository;
 
-    public CityServiceImpl(com.core.core.repository.CityRepository cityRepository) {
+    public CityServiceImpl(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
     }
 
