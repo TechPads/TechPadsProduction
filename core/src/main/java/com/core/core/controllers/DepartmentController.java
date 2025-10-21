@@ -1,7 +1,6 @@
 package com.core.core.controllers;
 
 import com.core.core.modules.Department;
-import com.core.core.modules.InventoryClass;
 import com.core.core.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

@@ -5,19 +5,24 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "DEPARTMENTS")
+@Table(name = "CITIES")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Department {
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DEPID")
-    private Long depID;
+    @Column(name = "CITYID")
+    private Long cityID;
 
-    @Column(name = "DEPNAME", nullable = false, unique = true, length = 100)
-    private String depName;
+    @Column(name = "CITYNAME", nullable = false, length = 100)
+    private String cityName;
+
+    @ManyToOne
+    @JoinColumn(name = "DEPID", nullable = false)
+    private Department department;
+
 }
