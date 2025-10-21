@@ -31,10 +31,10 @@ export class CreateProductComponent implements OnInit {
       proPrice: ['', [Validators.required, Validators.min(1)]],
       proMark: ['', [Validators.required, Validators.minLength(2)]],
       descript: ['', [Validators.required, Validators.minLength(5)]],
-      typeId: ['', Validators.required],
+      typeCode: ['', Validators.required],
     });
 
-    // Cargar tipos de producto
+   
     this.productService.getProductTypes().subscribe({
       next: (types: ProductType[]) => {
         console.log('🧩 Tipos recibidos:', types);
@@ -47,13 +47,13 @@ export class CreateProductComponent implements OnInit {
       },
     });
 
-    // Vista previa de imagen
+   
     this.productForm.get('proImg')?.valueChanges.subscribe((url: string) => {
       this.previewImage = url;
     });
   }
 
-  // Evitar letras en el código
+  
   onlyNumbers(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
@@ -69,7 +69,7 @@ export class CreateProductComponent implements OnInit {
     }
 
     const productData = this.productForm.value;
-    const selectedType = this.productTypes.find((t) => t.typeCode === Number(productData.typeId));
+    const selectedType = this.productTypes.find((t) => t.typeCode === Number(productData.typeCode));
 
     if (!selectedType) {
       this.errorMessage = 'Tipo de producto inválido.';

@@ -79,15 +79,15 @@
         <div class="submenu" [class.open]="categoriaExpandida">
           <a href="#" 
              class="submenu-item" 
-             [class.active]="selectedTypeId === null"
+             [class.active]="selectedTypeCode === null"
              (click)="filterByType(null); $event.preventDefault()">
             Todos los productos
           </a>
           <a href="#" 
              *ngFor="let type of productTypes" 
              class="submenu-item"
-             [class.active]="selectedTypeId === type.typeId"
-             (click)="filterByType(type.typeId); $event.preventDefault()">
+             [class.active]="selectedTypeCode === type.typeCode"
+             (click)="filterByType(type.typeCode); $event.preventDefault()">
             {{ type.typeName }}
           </a>
         </div>

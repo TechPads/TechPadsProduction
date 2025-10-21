@@ -30,10 +30,8 @@ export class Principal {
     this.showRegister = true;
   }
 
-  // Método para el login
+ 
   login() {
-    // Aquí irá tu lógica de autenticación
-    // Por ahora solo navegamos a products
     this.router.navigate(['/products']);
   }
 }

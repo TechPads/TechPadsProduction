@@ -34,13 +34,13 @@
 
     <!-- Tipo -->
 <label>Tipo</label>
-<select formControlName="typeId">
+<select formControlName="typeCode">
   <option value="">Selecciona tipo</option>
   <option *ngFor="let type of productTypes" [value]="type.typeCode">
     {{ type.typeName }}
   </option>
 </select>
-<div *ngIf="submitted && productForm.controls['typeId'].invalid" class="error-message">
+<div *ngIf="submitted && productForm.controls['typeCode'].invalid" class="error-message">
   <small>Selecciona un tipo de producto.</small>
 </div>
 

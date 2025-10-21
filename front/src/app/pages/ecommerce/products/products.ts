@@ -15,7 +15,7 @@ export class Products implements OnInit {
   productTypes: ProductType[] = [];
   menuOpen: boolean = false;
   categoriaExpandida: boolean = false;
-  selectedTypeId: number | null = null;
+  selectedTypeCode: number | null = null;
 
   constructor(private productService: ProductService, private router: Router) {}
 
@@ -38,13 +38,13 @@ export class Products implements OnInit {
     });
   }
 
-  filterByType(typeId: number | null): void {
-    this.selectedTypeId = typeId;
+  filterByType(typeCode: number | null): void {
+    this.selectedTypeCode = typeCode;
     
-    if (typeId === null) {
+    if (typeCode === null) {
       this.loadProducts();
     } else {
-      this.productService.getProductsByType(typeId).subscribe({
+      this.productService.getProductsByType(typeCode).subscribe({
         next: (data) => this.productos = data,
         error: (err) => console.error('Error filtrando productos', err)
       });
@@ -57,10 +57,6 @@ export class Products implements OnInit {
 
   toggleCategoria(): void {
     this.categoriaExpandida = !this.categoriaExpandida;
-  }
-
-  toggleFavorito(producto: Product): void {
-    // Implementar lógica de favoritos si es necesario
   }
 
   formatPrecio(precio: number): string {
