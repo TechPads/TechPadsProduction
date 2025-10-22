@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { InventoryService, InventoryItem } from '../../../services/inventory.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -14,12 +15,14 @@ export class StoreComponent implements OnInit, OnDestroy {
   inventoryItems: InventoryItem[] = [];
   private filterSubscription?: Subscription;
 
-  constructor(private inventoryService: InventoryService) {}
+  constructor(
+    private inventoryService: InventoryService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadInventory();
-    
-    // Suscribirse a cambios de filtro desde el layout
+   
     this.filterSubscription = this.inventoryService.typeCodeFilter$.subscribe(
       typeCode => this.filterByType(typeCode)
     );
@@ -48,6 +51,18 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   formatPrice(price: number): string {
-    return `${price.toLocaleString('es-CO')}`;
+    return `$${price.toLocaleString('es-CO')}`;
+  }
+
+  viewProductDetail(productCode: number): void {
+    this.router.navigate(['/store/product', productCode]);
+  }
+
+
+  addToCart(event: Event, item: InventoryItem): void {
+    event.stopPropagation(); 
+    console.log('Producto agregado al carrito:', item);
+ 
+    // this.cartService.addToCart(item);
   }
 }
