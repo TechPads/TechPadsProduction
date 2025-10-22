@@ -23,41 +23,37 @@ public class InventoryServiceImpl implements InventoryService {
     private EntityManager entityManager;
 
     @Override
-    public List<InventoryClass> getAllInventory(){
+    public List<InventoryClass> getAllInventory() {
         return inventoryRepository.findAll();
     }
 
     @Override
-    public InventoryClass getInventory(Long code){
-        return  inventoryRepository.findById(code)
+    public InventoryClass getInventory(Long code) {
+        return inventoryRepository.findById(code)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado " + code));
     }
 
     @Override
-    public InventoryClass createInventory(InventoryClass inventoryClass){
+    public InventoryClass createInventory(InventoryClass inventoryClass) {
         return inventoryRepository.save(inventoryClass);
     }
 
     @Override
-    public InventoryClass updateInventory(Long code, InventoryClass inventoryClass){
+    public InventoryClass updateInventory(Long code, InventoryClass inventoryClass) {
         InventoryClass inventory = inventoryRepository.findById(code)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado " + code));
-
-        inventory.setProvider(inventoryClass.getProvider());
-        inventory.setInvDate(inventoryClass.getInvDate());
-        inventory.setSellingPrice(inventoryClass.getSellingPrice());
         inventory.setInvStock(inventoryClass.getInvStock());
-        inventory.setProduct(inventoryClass.getProduct());
+        inventory.setSellingPrice(inventoryClass.getSellingPrice());
+        inventory.setInvDate(inventoryClass.getInvDate());
 
         return inventoryRepository.save(inventory);
     }
 
-
     @Override
-    public boolean deleteInventory(Long code){
+    public boolean deleteInventory(Long code) {
         Optional<InventoryClass> inventory = inventoryRepository.findById(code);
 
-        if(inventory.isPresent()){
+        if (inventory.isPresent()) {
             inventoryRepository.deleteById(code);
             return true;
         }
