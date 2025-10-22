@@ -21,8 +21,8 @@ export const routes: Routes = [
     component: AdminLayoutComponent,
     children: [
       { path: 'dashboard', component: Dashboard },
-      
-      
+
+      // 📦 Productos
       {
         path: 'products/create',
         loadComponent: () =>
@@ -45,6 +45,7 @@ export const routes: Routes = [
           ),
       },
 
+     
       {
         path: 'inventory/list',
         loadComponent: () =>
@@ -52,6 +53,14 @@ export const routes: Routes = [
             (m) => m.InventoryListComponent
           ),
       },
+      {
+        path: 'inventory/edit/:id', 
+        loadComponent: () =>
+          import('./pages/admin/inventory/edit-inventory/edit-inventory').then(
+            (m) => m.EditInventoryComponent
+          ),
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
