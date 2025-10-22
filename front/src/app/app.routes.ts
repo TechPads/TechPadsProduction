@@ -8,7 +8,6 @@ import { Dashboard } from './pages/admin/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: Principal },
-
   {
     path: 'store',
     component: StoreLayoutComponent,
@@ -17,12 +16,13 @@ export const routes: Routes = [
       { path: 'product/:id', component: ProductDetailComponent },
     ],
   },
-
   {
     path: 'admin',
     component: AdminLayoutComponent,
     children: [
       { path: 'dashboard', component: Dashboard },
+
+      // 📦 Productos
       {
         path: 'products/create',
         loadComponent: () =>
@@ -44,6 +44,23 @@ export const routes: Routes = [
             (m) => m.EditProductComponent
           ),
       },
+
+     
+      {
+        path: 'inventory/list',
+        loadComponent: () =>
+          import('./pages/admin/inventory/inventory-list/inventory-list').then(
+            (m) => m.InventoryListComponent
+          ),
+      },
+      {
+        path: 'inventory/edit/:id', 
+        loadComponent: () =>
+          import('./pages/admin/inventory/edit-inventory/edit-inventory').then(
+            (m) => m.EditInventoryComponent
+          ),
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

@@ -40,7 +40,6 @@ export interface InventoryItem {
 export class InventoryService {
   private apiUrl = 'http://localhost:8080/techPads/store/v1';
   
-  // Subject para comunicar filtros entre componentes
   private typeCodeFilterSubject = new Subject<number | null>();
   typeCodeFilter$ = this.typeCodeFilterSubject.asObservable();
 
@@ -67,8 +66,12 @@ export class InventoryService {
   getInventoryItem(invCode: number): Observable<InventoryItem> {
     return this.http.get<InventoryItem>(`${this.apiUrl}/inventory/${invCode}`);
   }
+  editInventoryItem(invCode: number, data: Partial<InventoryItem>): Observable<InventoryItem> {
+    return this.http.put<InventoryItem>(`${this.apiUrl}/inventory/${invCode}`, data);
+  }
 
   filterByTypeCode(typeCode: number | null): void {
     this.typeCodeFilterSubject.next(typeCode);
   }
+
 }

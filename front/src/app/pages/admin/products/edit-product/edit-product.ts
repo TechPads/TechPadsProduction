@@ -32,7 +32,7 @@ export class EditProductComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Formulario de producto
+ 
     this.productForm = this.fb.group({
       proCode: [{ value: '', disabled: true }],
       proName: ['', [Validators.required, Validators.minLength(2)]],
@@ -43,7 +43,7 @@ export class EditProductComponent implements OnInit {
       typeCode: ['', Validators.required],
     });
 
-    // Cargar tipos de producto
+    
     this.productService.getProductTypes().subscribe({
       next: (types: ProductType[]) => {
         this.productTypes = types;
@@ -56,7 +56,7 @@ export class EditProductComponent implements OnInit {
       },
     });
 
-    // Obtener el ID de la ruta y cargar el producto
+  
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
@@ -65,7 +65,7 @@ export class EditProductComponent implements OnInit {
       }
     });
 
-    // Preview de imagen
+
     this.productForm.get('proImg')?.valueChanges.subscribe((url: string) => {
       this.previewImage = url;
     });
@@ -75,8 +75,6 @@ export class EditProductComponent implements OnInit {
     this.loadingProduct = true;
     this.productService.getProductById(proCode).subscribe({
       next: (product: Product) => {
-        console.log('📦 Producto cargado:', product);
-        
         this.productForm.patchValue({
           proCode: product.proCode,
           proName: product.proName,

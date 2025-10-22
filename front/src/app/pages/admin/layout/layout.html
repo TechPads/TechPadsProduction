@@ -93,19 +93,16 @@
 
         <div class="submenu" [class.open]="inventarioExpanded">
           <a
-            [routerLink]="['/admin/inventory/register']"
+            [routerLink]="['/admin/inventory/create']"
             class="submenu-item"
             routerLinkActive="active"
             >Registrar lote</a
           >
           <a
-            [routerLink]="['/admin/inventory/query']"
+            [routerLink]="['/admin/inventory/list']"
             class="submenu-item"
             routerLinkActive="active"
             >Consultar inventario</a
-          >
-          <a [routerLink]="['/admin/inventory/edit']" class="submenu-item" routerLinkActive="active"
-            >Modificar inventario</a
           >
         </div>
 
@@ -145,7 +142,10 @@
             routerLinkActive="active"
             >Crear</a
           >
-          <a [routerLink]="['/admin/products/list']" class="submenu-item" routerLinkActive="active"
+          <a 
+            [routerLink]="['/admin/products/list']" 
+            class="submenu-item" 
+            routerLinkActive="active"
             >Modificar/Eliminar</a
           >
         </div>
