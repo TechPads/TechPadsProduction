@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { InventoryService, InventoryItem, ProductType } from '../../../services/inventory.service';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { InventoryService, InventoryItem } from '../../../services/inventory.service';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-store',
@@ -10,12 +11,9 @@ import { Router } from '@angular/router';
   templateUrl: './store.html',
   styleUrls: ['./store.css']
 })
-export class StoreComponent implements OnInit {
+export class StoreComponent implements OnInit, OnDestroy {
   inventoryItems: InventoryItem[] = [];
-  productTypes: ProductType[] = [];
-  menuOpen: boolean = false;
-  categoriaExpandida: boolean = false;
-  selectedTypeCode: number | null = null;
+  private filterSubscription?: Subscription;
 
   constructor(
     private inventoryService: InventoryService,
@@ -23,15 +21,15 @@ export class StoreComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadProductTypes();
     this.loadInventory();
+   
+    this.filterSubscription = this.inventoryService.typeCodeFilter$.subscribe(
+      typeCode => this.filterByType(typeCode)
+    );
   }
 
-  loadProductTypes(): void {
-    this.inventoryService.getProductTypes().subscribe({
-      next: (data: any) => this.productTypes = data,
-      error: (err: any) => console.error('Error cargando tipos de producto', err)
-    });
+  ngOnDestroy(): void {
+    this.filterSubscription?.unsubscribe();
   }
 
   loadInventory(): void {
@@ -42,8 +40,6 @@ export class StoreComponent implements OnInit {
   }
 
   filterByType(typeCode: number | null): void {
-    this.selectedTypeCode = typeCode;
-   
     if (typeCode === null) {
       this.loadInventory();
     } else {
@@ -54,19 +50,19 @@ export class StoreComponent implements OnInit {
     }
   }
 
-  toggleMenu(): void {
-    this.menuOpen = !this.menuOpen;
-  }
-
-  toggleCategoria(): void {
-    this.categoriaExpandida = !this.categoriaExpandida;
-  }
-
   formatPrice(price: number): string {
     return `$${price.toLocaleString('es-CO')}`;
   }
 
-  goToAdmin(): void {
-    this.router.navigate(['/admin/dashboard']);
+  viewProductDetail(productCode: number): void {
+    this.router.navigate(['/store/product', productCode]);
+  }
+
+
+  addToCart(event: Event, item: InventoryItem): void {
+    event.stopPropagation(); 
+    console.log('Producto agregado al carrito:', item);
+ 
+    // this.cartService.addToCart(item);
   }
 }

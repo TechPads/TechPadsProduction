@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface ProductType {
@@ -39,6 +39,10 @@ export interface InventoryItem {
 })
 export class InventoryService {
   private apiUrl = 'http://localhost:8080/techPads/store/v1';
+  
+  // Subject para comunicar filtros entre componentes
+  private typeCodeFilterSubject = new Subject<number | null>();
+  typeCodeFilter$ = this.typeCodeFilterSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -50,7 +54,7 @@ export class InventoryService {
 
   getInventoryByType(typeCode: number): Observable<InventoryItem[]> {
     return this.http.get<InventoryItem[]>(`${this.apiUrl}/inventory`).pipe(
-      map(items => items.filter(item => 
+      map(items => items.filter(item =>
         item.product.productType.typeCode === typeCode && item.invStock > 0
       ))
     );
@@ -62,5 +66,9 @@ export class InventoryService {
 
   getInventoryItem(invCode: number): Observable<InventoryItem> {
     return this.http.get<InventoryItem>(`${this.apiUrl}/inventory/${invCode}`);
+  }
+
+  filterByTypeCode(typeCode: number | null): void {
+    this.typeCodeFilterSubject.next(typeCode);
   }
 }
