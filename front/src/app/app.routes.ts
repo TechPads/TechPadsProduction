@@ -8,16 +8,16 @@ import { Dashboard } from './pages/admin/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: Principal },
-  
+
   {
     path: 'store',
     component: StoreLayoutComponent,
     children: [
       { path: '', component: StoreComponent },
-      { path: 'product/:id', component: ProductDetailComponent }
-    ]
+      { path: 'product/:id', component: ProductDetailComponent },
+    ],
   },
-  
+
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -28,6 +28,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/products/create-product/create-product').then(
             (m) => m.CreateProductComponent
+          ),
+      },
+      {
+        path: 'products/list',
+        loadComponent: () =>
+          import('./pages/admin/products/product-list/product-list').then(
+            (m) => m.ProductListComponent
+          ),
+      },
+      {
+        path: 'products/edit/:id',
+        loadComponent: () =>
+          import('./pages/admin/products/edit-product/edit-product').then(
+            (m) => m.EditProductComponent
           ),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService, ProductType, Product } from '../../../../services/product.service';
 
 @Component({
@@ -10,22 +11,30 @@ import { ProductService, ProductType, Product } from '../../../../services/produ
   templateUrl: './edit-product.html',
   styleUrls: ['./edit-product.css'],
 })
-export class editProductComponent implements OnInit {
+export class EditProductComponent implements OnInit {
   productForm!: FormGroup;
   productTypes: ProductType[] = [];
   previewImage = '';
   toastMessage = '';
   toastType: 'success' | 'error' | '' = '';
   showToast = false;
-  errorMessage: string | null = null;
-  successMessage: string | null = null;
   loadingTypes = true;
+  loadingProduct = false;
   submitted = false;
+  productLoaded = false;
+  productCode: number | null = null;
 
-  constructor(private fb: FormBuilder, private productService: ProductService) {}
+  constructor(
+    private fb: FormBuilder,
+    private productService: ProductService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    // Formulario de producto
     this.productForm = this.fb.group({
+      proCode: [{ value: '', disabled: true }],
       proName: ['', [Validators.required, Validators.minLength(2)]],
       proImg: ['', [Validators.required]],
       proPrice: ['', [Validators.required, Validators.min(1)]],
@@ -34,27 +43,67 @@ export class editProductComponent implements OnInit {
       typeCode: ['', Validators.required],
     });
 
-   
+    // Cargar tipos de producto
     this.productService.getProductTypes().subscribe({
       next: (types: ProductType[]) => {
-        console.log('🧩 Tipos recibidos:', types);
         this.productTypes = types;
         this.loadingTypes = false;
       },
       error: (err: any) => {
         console.error('Error al cargar tipos de producto', err);
+        this.showToastMessage('Error al cargar tipos de producto', 'error');
         this.loadingTypes = false;
       },
     });
 
-   
+    // Obtener el ID de la ruta y cargar el producto
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.productCode = Number(id);
+        this.loadProductData(this.productCode);
+      }
+    });
+
+    // Preview de imagen
     this.productForm.get('proImg')?.valueChanges.subscribe((url: string) => {
       this.previewImage = url;
     });
   }
 
-  
-  onlyNumbers(event: KeyboardEvent) {
+  loadProductData(proCode: number): void {
+    this.loadingProduct = true;
+    this.productService.getProductById(proCode).subscribe({
+      next: (product: Product) => {
+        console.log('📦 Producto cargado:', product);
+        
+        this.productForm.patchValue({
+          proCode: product.proCode,
+          proName: product.proName,
+          proImg: product.proImg,
+          proPrice: product.proPrice,
+          proMark: product.proMark,
+          descript: product.descript,
+          typeCode: product.productType?.typeCode || '',
+        });
+
+        this.previewImage = product.proImg || '';
+        this.loadingProduct = false;
+        this.productLoaded = true;
+      },
+      error: (err: any) => {
+        console.error('Error al cargar el producto', err);
+        this.showToastMessage('Producto no encontrado', 'error');
+        this.loadingProduct = false;
+        this.productLoaded = false;
+        setTimeout(() => {
+          this.router.navigate(['/admin/products/list']);
+        }, 2000);
+      },
+    });
+  }
+
+  onlyNumbers(event: KeyboardEvent): void {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
       event.preventDefault();
@@ -63,41 +112,42 @@ export class editProductComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+
     if (this.productForm.invalid) {
       this.showToastMessage('Por favor completa todos los campos correctamente.', 'error');
       return;
     }
 
-    const productData = this.productForm.value;
-    const selectedType = this.productTypes.find((t) => t.typeCode === Number(productData.typeCode));
+    const formValue = this.productForm.getRawValue();
+    const selectedType = this.productTypes.find((t) => t.typeCode === Number(formValue.typeCode));
 
     if (!selectedType) {
-      this.errorMessage = 'Tipo de producto inválido.';
+      this.showToastMessage('Tipo de producto inválido.', 'error');
       return;
     }
 
-    const newProduct: Product = {
-      proCode: Number(productData.proCode),
-      proName: productData.proName,
-      descript: productData.descript,
-      proImg: productData.proImg,
-      proMark: productData.proMark,
-      proPrice: productData.proPrice,
+    const productData: Product = {
+      proCode: Number(formValue.proCode),
+      proName: formValue.proName,
+      descript: formValue.descript,
+      proImg: formValue.proImg,
+      proMark: formValue.proMark,
+      proPrice: Number(formValue.proPrice),
       productType: selectedType,
     };
 
-    this.productService.editProduct(newProduct).subscribe({
+    this.productService.editProduct(productData).subscribe({
       next: () => {
-        this.showToastMessage('Producto creado correctamente.', 'success');
-        this.productForm.reset();
-        this.previewImage = '';
-        this.submitted = false;
+        this.showToastMessage('Producto actualizado correctamente.', 'success');
+        setTimeout(() => {
+          this.router.navigate(['/admin/products/list']);
+        }, 1500);
       },
       error: (err: any) => {
         const backendError =
           typeof err.error === 'string'
             ? err.error
-            : err?.error?.message || 'Error al crear el producto.';
+            : err?.error?.message || 'Error al actualizar el producto.';
         this.showToastMessage(backendError, 'error');
       },
     });
@@ -108,5 +158,9 @@ export class editProductComponent implements OnInit {
     this.toastType = type;
     this.showToast = true;
     setTimeout(() => (this.showToast = false), 3000);
+  }
+
+  goBack(): void {
+    this.router.navigate(['/admin/products/list']);
   }
 }
