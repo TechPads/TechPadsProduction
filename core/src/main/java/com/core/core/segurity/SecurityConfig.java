@@ -35,9 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**", "/users/**", "/public/**", "/city/**", "/department/**").permitAll()
                         //.requestMatchers("/auth/register").permitAll()
-                        .anyRequest().authenticated() // ✅ Todo lo demás protegido
+                        .anyRequest().authenticated() // Todo lo demás protegido
                 )
-                // ✅ Manejo elegantede errores de autenticación
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
