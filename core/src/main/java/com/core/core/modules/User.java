@@ -40,6 +40,12 @@ public class User {
     @Column(name = "STATUS", columnDefinition = "CHAR")
     private String status;
 
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) createdAt = LocalDate.now();
+        if (status == null) status = "A";
+    }
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ClientDetail clientDetail;
 }

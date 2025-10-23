@@ -31,6 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("v_proMark") String proMark
     );
 
+
     @Procedure(procedureName = "GESTION_PRODUCTO.ELIMINAR_PRODUCTO")
     void eliminarProducto(@Param("v_proCode") Long proCode);
 }
