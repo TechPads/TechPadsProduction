@@ -7,6 +7,7 @@ import { ProductDetailComponent } from './pages/ecommerce/store/components/produ
 import { StoreComponent } from './pages/ecommerce/store/store';
 import { AdminLayoutComponent } from './pages/admin/layout/layout';
 import { Dashboard } from './pages/admin/dashboard/dashboard';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Principal },
@@ -23,10 +24,10 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [AuthGuard], 
+    data: { roles: ['ADMIN'] }, 
     children: [
       { path: 'dashboard', component: Dashboard },
-
-      // 📦 Productos
       {
         path: 'products/create',
         loadComponent: () =>
@@ -48,8 +49,6 @@ export const routes: Routes = [
             (m) => m.EditProductComponent
           ),
       },
-
-     
       {
         path: 'inventory/list',
         loadComponent: () =>
@@ -58,14 +57,14 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'inventory/edit/:id', 
+        path: 'inventory/edit/:id',
         loadComponent: () =>
           import('./pages/admin/inventory/edit-inventory/edit-inventory').then(
             (m) => m.EditInventoryComponent
           ),
       },
-
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+  { path: '**', redirectTo: '' }
 ];

@@ -48,9 +48,6 @@ export class CitiesDepartmentService {
       );
   }
 
-  /**
-   * Obtiene un departamento por su ID
-   */
   getDepartmentById(id: number): Observable<Department> {
     return this.http.get<DepartmentAPI>(`${this.DEPARTMENT_ENDPOINT}/${id}`)
       .pipe(
