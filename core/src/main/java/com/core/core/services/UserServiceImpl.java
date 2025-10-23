@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         // Encriptar contraseña antes de guardar
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getStatus() == null) user.setStatus("A");
         return userRepository.save(user);
     }
 
