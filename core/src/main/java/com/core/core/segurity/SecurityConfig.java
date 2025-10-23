@@ -33,7 +33,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/users/**", "/public/**", "/deptment/**", "/city/**").permitAll()
+                        .requestMatchers("/auth/**", "/users/**", "/public/**", "/city/**", "/department/**").permitAll()
                         //.requestMatchers("/auth/register").permitAll()
                         .anyRequest().authenticated() // ✅ Todo lo demás protegido
                 )
