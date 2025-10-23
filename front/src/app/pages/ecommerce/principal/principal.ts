@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Login } from '../../auth/login/login';
+import { Register } from '../../auth/register/register';
 
 @Component({
   selector: 'app-principal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Login, Register],
   templateUrl: './principal.html',
   styleUrl: './principal.css'
 })
@@ -13,25 +14,23 @@ export class Principal {
   showLogin = false;
   showRegister = false;
 
-  constructor(private router: Router) {}
-
-  toggleLogin() {
+  toggleLogin(): void {
     this.showLogin = !this.showLogin;
     this.showRegister = false;
   }
 
-  toggleRegister() {
+  toggleRegister(): void {
     this.showRegister = !this.showRegister;
     this.showLogin = false;
   }
 
-  openRegisterFromLogin() {
+  switchToRegister(): void {
     this.showLogin = false;
     this.showRegister = true;
   }
 
- 
-  login() {
-    this.router.navigate(['/products']);
+  closeModals(): void {
+    this.showLogin = false;
+    this.showRegister = false;
   }
 }

@@ -58,7 +58,6 @@
   object-fit: cover;
 }
 
-/* ✅ TOAST */
 .toast {
   position: fixed;
   top: 1.5rem;
