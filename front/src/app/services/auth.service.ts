@@ -114,7 +114,7 @@ export class AuthService {
     localStorage.removeItem(this.USER_KEY);
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
     console.log('Sesión cerrada');
   }
 
@@ -168,7 +168,7 @@ export class AuthService {
   // =====================  USUARIO  ============================
   // ============================================================
 
-  // Cambia de private a public
+ 
   getUserData(username: string): Observable<User> {
     return this.http.get<User>(`${this.USERS_ENDPOINT}/username/${username}`).pipe(
       tap((user) => this.setUser(user)), // Guardar usuario al obtenerlo
