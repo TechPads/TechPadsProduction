@@ -1,10 +1,10 @@
 <!-- Modal Overlay -->
 <div class="modal-overlay" (click)="closeModal()">
   <div class="modal-content login-modal" (click)="$event.stopPropagation()">
-    <!-- Botón de cerrar -->
-    <button class="close-btn" (click)="closeModal()" type="button">×</button>
-    
     <div class="login-card">
+      <!-- Botón de cerrar dentro del card -->
+      <button class="close-btn" (click)="closeModal()" type="button">×</button>
+      
       <div class="login-header">
         <h2>Iniciar Sesión</h2>
         <p>Accede a tu cuenta de TechPads Store</p>
@@ -66,7 +66,9 @@
       </form>
 
       <div class="login-footer">
-        <p>¿No tienes una cuenta? <a (click)="goToRegister()" class="link-register">Regístrate aquí</a></p>
+        <p>¿No tienes una cuenta? 
+          <a (click)="goToRegister()" class="link-register">Regístrate aquí</a>
+        </p>
       </div>
     </div>
   </div>

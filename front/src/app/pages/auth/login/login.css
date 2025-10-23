@@ -11,6 +11,8 @@
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -24,11 +26,16 @@
 
 /* Contenido del modal */
 .modal-content {
-  position: relative;
+  position: relative; /* Mantén esta posición */
   animation: slideUp 0.3s ease-out;
   max-height: 90vh;
   overflow-y: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 @keyframes slideUp {
   from {
@@ -44,14 +51,14 @@
 /* Botón de cerrar */
 .close-btn {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 12px;     /* Ajusta la posición */
+  right: 12px;   /* Ajusta la posición */
   background: rgba(255, 255, 255, 0.9);
   border: none;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -60,9 +67,10 @@
   color: #1f2937;
   transition: all 0.3s;
   z-index: 10;
-  padding: 0;
 }
-
+.login-card {
+  position: relative;
+}
 .close-btn:hover {
   background: white;
   transform: scale(1.1) rotate(90deg);
@@ -71,12 +79,15 @@
 
 /* Card del login */
 .login-card {
+  position: relative; /* <-- NUEVO: el botón se posicionará dentro de este contenedor */
   background: white;
   border-radius: 16px;
   padding: 50px 40px 40px;
   width: 100%;
   max-width: 450px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  margin: auto;
+  flex-shrink: 0;
 }
 
 .login-header {
@@ -144,6 +155,7 @@
   font-size: 14px;
   transition: all 0.3s;
   font-family: inherit;
+  box-sizing: border-box; /* Importante para el cálculo del width */
 }
 
 .form-group input:focus {
@@ -205,6 +217,7 @@
   transition: all 0.3s;
   margin-top: 10px;
   font-family: inherit;
+  box-sizing: border-box; /* Importante para el cálculo del width */
 }
 
 .btn-login:hover:not(:disabled) {
@@ -259,10 +272,14 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .modal-overlay {
+    padding: 15px;
+  }
+  
   .login-card {
     padding: 40px 30px 30px;
-    max-width: 95%;
-    margin: 20px;
+    max-width: 100%;
+    margin: 0;
   }
 
   .login-header h2 {
@@ -275,6 +292,21 @@
     font-size: 24px;
     top: 10px;
     right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 10px;
+  }
+  
+  .login-card {
+    padding: 35px 25px 25px;
+    border-radius: 12px;
+  }
+  
+  .login-header h2 {
+    font-size: 22px;
   }
 }
 
@@ -294,4 +326,9 @@
 
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Asegurar que el body no tenga scroll cuando el modal está abierto */
+body.modal-open {
+  overflow: hidden;
 }
