@@ -1,1 +1,142 @@
-<p>register works!</p>
+<div class="modal-content modal-register" (click)="$event.stopPropagation()">
+  <button class="close-btn" (click)="close.emit()">×</button>
+  <!-- Columna Izquierda -->
+  <div class="register-left">
+    <div class="register-illustration">
+      <svg viewBox="0 0 200 200" class="illustration-svg">
+        <circle cx="60" cy="60" r="30" fill="#3B82F6" opacity="0.2"/>
+        <rect x="30" y="100" width="140" height="80" rx="10" fill="#3B82F6" opacity="0.3"/>
+        <circle cx="170" cy="30" r="15" fill="#3B82F6"/>
+        <rect x="20" y="20" width="40" height="50" rx="5" fill="#E0E7FF"/>
+      </svg>
+    </div>
+    <h3>Una cuenta, toda tu tienda</h3>
+    <p class="register-subtitle">¡Regístrate y consigue todo lo que necesitas desde un solo portal!</p>
+    
+    <ul class="benefits-list">
+      <li>
+        <span class="icon">🛒</span>
+        <span>Compra tus componentes fácilmente</span>
+      </li>
+      <li>
+        <span class="icon">📦</span>
+        <span>Haz seguimiento de tus pedidos</span>
+      </li>
+      <li>
+        <span class="icon">🔄</span>
+        <span>Gestiona cambios y devoluciones</span>
+      </li>
+      <li>
+        <span class="icon">📄</span>
+        <span>Descarga tus facturas al instante</span>
+      </li>
+      <li>
+        <span class="icon">🔔</span>
+        <span>Mantente informado de las últimas novedades</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Columna Derecha -->
+  <div class="register-right">
+    <h2>Registrarse</h2>
+    
+    <!-- Mensaje de error -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="input-label">
+          <label>Primer nombre*:</label>
+          <input type="text" [(ngModel)]="userForm.primerNombre" name="primerNombre" required />
+        </div>
+        
+        <div class="input-label">
+          <label>Segundo nombre:</label>
+          <input type="text" [(ngModel)]="userForm.segundoNombre" name="segundoNombre" />
+        </div>
+        
+        <div class="input-label">
+          <label>Primer apellido*:</label>
+          <input type="text" [(ngModel)]="userForm.primerApellido" name="primerApellido" required />
+        </div>
+        
+        <div class="input-label">
+          <label>Segundo apellido:</label>
+          <input type="text" [(ngModel)]="userForm.segundoApellido" name="segundoApellido" />
+        </div>
+        
+        <div class="input-label full-width">
+          <label>Correo*:</label>
+          <input type="email" [(ngModel)]="userForm.correo" name="correo" required />
+        </div>
+        
+        <div class="input-label full-width">
+          <label>Contraseña*:</label>
+          <input type="password" [(ngModel)]="userForm.password" name="password" required />
+        </div>
+        
+        <div class="input-label full-width">
+          <label>Username*:</label>
+          <input type="text" [(ngModel)]="userForm.username" name="username" required />
+        </div>
+        
+        <div class="input-label full-width">
+          <label>Telefono*:</label>
+          <input type="tel" [(ngModel)]="userForm.telefono" name="telefono" required />
+        </div>
+        
+        <div class="input-label address-group">
+          <label>Direccion:</label>
+          <select [(ngModel)]="userForm.tipoDireccion" name="tipoDireccion">
+            <option value="">Dirección</option>
+            <option value="calle">Calle</option>
+            <option value="carrera">Carrera</option>
+          </select>
+          <input type="text" [(ngModel)]="userForm.direccion" name="direccion" class="address-input" />
+        </div>
+        
+        <div class="input-label">
+          <label>Departamento*:</label>
+          <select 
+            [(ngModel)]="userForm.departamento" 
+            name="departamento"
+            (change)="onDepartmentChange()"
+            [disabled]="isLoadingDepartments"
+            required
+          >
+            <option value="">
+              {{ isLoadingDepartments ? 'Cargando...' : 'Seleccione un departamento' }}
+            </option>
+            <option *ngFor="let dept of departments" [value]="dept.id">
+              {{ dept.name }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="input-label">
+          <label>Ciudad*:</label>
+          <select 
+            [(ngModel)]="userForm.ciudad" 
+            name="ciudad"
+            [disabled]="!userForm.departamento || isLoadingCities"
+            required
+          >
+            <option value="">
+              {{ isLoadingCities ? 'Cargando ciudades...' : 
+                 !userForm.departamento ? 'Primero seleccione un departamento' : 
+                 'Seleccione una ciudad' }}
+            </option>
+            <option *ngFor="let city of cities" [value]="city.id">
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn-registrarse">Registrarse</button>
+    </form>
+  </div>
+</div>

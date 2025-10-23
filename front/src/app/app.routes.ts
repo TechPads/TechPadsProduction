@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { Principal } from './pages/ecommerce/principal/principal';
+import { Login } from './pages/auth/login/login';
+import { Register } from './pages/auth/register/register';
 import { StoreLayoutComponent } from './pages/ecommerce/store-layout/store-layout';
 import { ProductDetailComponent } from './pages/ecommerce/store/components/product-detail/product-detail';
 import { StoreComponent } from './pages/ecommerce/store/store';
@@ -8,6 +10,8 @@ import { Dashboard } from './pages/admin/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: Principal },
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
   {
     path: 'store',
     component: StoreLayoutComponent,

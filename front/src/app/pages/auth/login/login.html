@@ -1,1 +1,37 @@
-<p>login works!</p>
+<div class="modal-content" (click)="$event.stopPropagation()">
+  <button class="close-btn" (click)="close.emit()">×</button>
+  <h2>INGRESAR</h2>
+ 
+  <form (ngSubmit)="onSubmit()">
+    <div class="input-label">
+      <label>Email</label>
+      <input
+        type="email"
+        [(ngModel)]="credentials.email"
+        name="email"
+        placeholder="ejemplo@email.com"
+        required
+      />
+    </div>
+   
+    <div class="input-label">
+      <label>Contraseña</label>
+      <input
+        type="password"
+        [(ngModel)]="credentials.password"
+        name="password"
+        placeholder="Contraseña"
+        required
+      />
+    </div>
+   
+    <button type="submit" class="btn-entrar">Entrar</button>
+   
+    <p class="register-link">
+      ¿No tienes cuenta?
+      <a href="#" (click)="switchToRegister($event)">
+        Regístrate
+      </a>
+    </p>
+  </form>
+</div>
