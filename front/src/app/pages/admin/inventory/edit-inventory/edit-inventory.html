@@ -1,0 +1,319 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Cargando inventario...</p>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="errorMessage && !loading">
+  <svg
+    width="64"
+    height="64"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="8" x2="12" y2="12"></line>
+    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+  </svg>
+  <p>{{ errorMessage }}</p>
+  <button type="button" class="btn-primary" (click)="router.navigate(['/admin/inventory'])">
+    Volver al inventario
+  </button>
+</div>
+
+<!-- Form Container -->
+<div class="form-container" *ngIf="!loading && !errorMessage && inventoryItem">
+  <!-- Back Button -->
+  <button type="button" class="back-button" (click)="goBack()">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+    Volver al inventario
+  </button>
+
+  <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()" class="inventory-form" novalidate>
+    <h2>Editar Inventario</h2>
+
+    <!-- Información del Producto (Solo lectura) -->
+    <div class="product-info-section">
+      <h3>Información del Producto</h3>
+
+      <div class="readonly-grid">
+        <div class="readonly-item">
+          <label>Código</label>
+          <input
+            type="text"
+            [value]="inventoryItem.product.proCode"
+            readonly
+            class="readonly-field"
+          />
+        </div>
+
+        <div class="readonly-item">
+          <label>Nombre</label>
+          <input
+            type="text"
+            [value]="inventoryItem.product.proName"
+            readonly
+            class="readonly-field"
+          />
+        </div>
+
+        <div class="readonly-item">
+          <label>Marca</label>
+          <input
+            type="text"
+            [value]="inventoryItem.product.proMark"
+            readonly
+            class="readonly-field"
+          />
+        </div>
+
+        <div class="readonly-item">
+          <label>Tipo</label>
+          <input
+            type="text"
+            [value]="inventoryItem.product.productType.typeName"
+            readonly
+            class="readonly-field"
+          />
+        </div>
+
+        <div class="readonly-item">
+          <label>Precio Base</label>
+          <input
+            type="text"
+            [value]="inventoryItem.product.proPrice | currency : 'COP' : 'symbol' : '1.0-0'"
+            readonly
+            class="readonly-field"
+          />
+        </div>
+      </div>
+      <small class="helper-text"
+        >La información del producto no se puede modificar desde aquí</small
+      >
+    </div>
+
+    <hr class="section-divider" />
+
+    <!-- Datos del Inventario -->
+    <div class="inventory-section">
+      <h3>Datos del Inventario</h3>
+
+      <!-- Stock -->
+      <label>Stock Disponible</label>
+      <input
+        formControlName="invStock"
+        type="number"
+        placeholder="Ej: 50"
+        (keypress)="onlyNumbers($event)"
+        min="0"
+      />
+      <div *ngIf="submitted && inventoryForm.controls['invStock'].invalid" class="error-message">
+        <small *ngIf="inventoryForm.controls['invStock'].errors?.['required']"
+          >El stock es obligatorio.</small
+        >
+        <small *ngIf="inventoryForm.controls['invStock'].errors?.['min']"
+          >El stock no puede ser negativo.</small
+        >
+      </div>
+
+      <!-- Precio de Venta -->
+      <label>Precio de Venta</label>
+      <input
+        formControlName="sellingPrice"
+        type="number"
+        placeholder="Ej: 6999"
+        step="0.01"
+        min="0"
+      />
+      <div
+        *ngIf="submitted && inventoryForm.controls['sellingPrice'].invalid"
+        class="error-message"
+      >
+        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['required']"
+          >El precio de venta es obligatorio.</small
+        >
+        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['min']"
+          >El precio debe ser mayor que 0.</small
+        >
+      </div>
+
+      <!-- Fecha de Inventario -->
+      <label>Fecha de Inventario</label>
+      <input formControlName="invDate" type="date" />
+      <div *ngIf="submitted && inventoryForm.controls['invDate'].invalid" class="error-message">
+        <small>La fecha de inventario es obligatoria.</small>
+      </div>
+    </div>
+
+    <hr class="section-divider" />
+
+    <!-- Datos del Proveedor -->
+    <div class="provider-section">
+      <h3>Información del Proveedor</h3>
+
+      <!-- ID Proveedor (readonly) -->
+      <label>ID del Proveedor</label>
+      <input formControlName="provId" type="text" readonly class="readonly-field" />
+      <small class="helper-text">El ID del proveedor no se puede modificar</small>
+
+      <!-- Nombre del Proveedor -->
+      <label>Nombre del Proveedor</label>
+      <input formControlName="provName" type="text" placeholder="Ej: Distribuidora Tech S.A." />
+      <div *ngIf="submitted && inventoryForm.controls['provName'].invalid" class="error-message">
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['required']"
+          >El nombre del proveedor es obligatorio.</small
+        >
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['minlength']"
+          >El nombre debe tener al menos 2 caracteres.</small
+        >
+      </div>
+
+      <!-- Email del Proveedor -->
+      <label>Email del Proveedor</label>
+      <input formControlName="provEmail" type="email" placeholder="Ej: contacto@proveedor.com" />
+      <div *ngIf="submitted && inventoryForm.controls['provEmail'].invalid" class="error-message">
+        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['required']"
+          >El email es obligatorio.</small
+        >
+        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['email']"
+          >Ingresa un email válido.</small
+        >
+      </div>
+
+      <!-- Teléfono del Proveedor -->
+      <label>Teléfono del Proveedor</label>
+      <input
+        formControlName="provPhone"
+        type="tel"
+        placeholder="Ej: 3001234567"
+        (keypress)="onlyNumbers($event)"
+      />
+      <div *ngIf="submitted && inventoryForm.controls['provPhone'].invalid" class="error-message">
+        <small *ngIf="inventoryForm.controls['provPhone'].errors?.['required']"
+          >El teléfono es obligatorio.</small
+        >
+        <small *ngIf="inventoryForm.controls['provPhone'].errors?.['pattern']"
+          >El teléfono debe tener entre 7 y 15 dígitos.</small
+        >
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+      <button type="button" class="btn-cancel" (click)="goBack()">Cancelar</button>
+      <button type="submit" class="btn-submit" [disabled]="inventoryForm.invalid && submitted">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Actualizar inventario
+      </button>
+    </div>
+  </form>
+
+  <!-- Preview Section -->
+  <div class="preview-section">
+    <h3>Vista previa del producto</h3>
+
+    <!-- Product Image -->
+    <div class="preview" *ngIf="inventoryItem.product.proImg; else noPreview">
+      <img [src]="inventoryItem.product.proImg" [alt]="inventoryItem.product.proName" />
+    </div>
+    <ng-template #noPreview>
+      <div class="no-preview">
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <p>Sin imagen</p>
+      </div>
+    </ng-template>
+
+    <!-- Inventory Info Preview -->
+    <div class="info-preview">
+      <div class="preview-item">
+        <span class="preview-label">Producto:</span>
+        <span class="preview-value">{{ inventoryItem.product.proName || '-' }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">Stock actual:</span>
+        <span
+          class="preview-value"
+          [class.stock-low]="(inventoryForm.get('invStock')?.value ?? 0) < 10"
+        >
+          {{ inventoryForm.get('invStock')?.value ?? 0 }} unidades
+        </span>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">Precio base:</span>
+        <span class="preview-value">{{
+          inventoryItem.product.proPrice | currency : 'COP' : 'symbol' : '1.0-0'
+        }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">Precio de venta:</span>
+        <span class="preview-value price-highlight">
+          {{ inventoryForm.get('sellingPrice')?.value | currency : 'COP' : 'symbol' : '1.0-0' }}
+        </span>
+      </div>
+      <div class="preview-item" *ngIf="getMargin() !== null">
+        <span class="preview-label">Margen:</span>
+        <span class="preview-value" [class.positive-margin]="getMargin()! > 0">
+          {{ getMargin() | number : '1.0-1' }}%
+        </span>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">Proveedor:</span>
+        <span class="preview-value">{{ inventoryForm.get('provName')?.value || '-' }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">Fecha:</span>
+        <span class="preview-value">{{ inventoryForm.get('invDate')?.value || '-' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div *ngIf="showToast" class="toast" [ngClass]="toastType">
+  <img
+    *ngIf="toastType === 'success'"
+    class="toast-icon"
+    src="https://cdn-icons-png.flaticon.com/512/845/845646.png"
+    alt="Éxito"
+  />
+  <img
+    *ngIf="toastType === 'error'"
+    class="toast-icon"
+    src="https://cdn-icons-png.flaticon.com/512/463/463612.png"
+    alt="Error"
+  />
+  <p>{{ toastMessage }}</p>
+</div>

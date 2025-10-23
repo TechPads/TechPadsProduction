@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface ProductType {
@@ -39,6 +39,9 @@ export interface InventoryItem {
 })
 export class InventoryService {
   private apiUrl = 'http://localhost:8080/techPads/store/v1';
+  
+  private typeCodeFilterSubject = new Subject<number | null>();
+  typeCodeFilter$ = this.typeCodeFilterSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -50,17 +53,25 @@ export class InventoryService {
 
   getInventoryByType(typeCode: number): Observable<InventoryItem[]> {
     return this.http.get<InventoryItem[]>(`${this.apiUrl}/inventory`).pipe(
-      map(items => items.filter(item => 
+      map(items => items.filter(item =>
         item.product.productType.typeCode === typeCode && item.invStock > 0
       ))
     );
   }
 
   getProductTypes(): Observable<ProductType[]> {
-    return this.http.get<ProductType[]>(`${this.apiUrl}/productTypes`);
+    return this.http.get<ProductType[]>(`${this.apiUrl}/prodType`);
   }
 
   getInventoryItem(invCode: number): Observable<InventoryItem> {
     return this.http.get<InventoryItem>(`${this.apiUrl}/inventory/${invCode}`);
   }
+  editInventoryItem(invCode: number, data: Partial<InventoryItem>): Observable<InventoryItem> {
+    return this.http.put<InventoryItem>(`${this.apiUrl}/inventory/${invCode}`, data);
+  }
+
+  filterByTypeCode(typeCode: number | null): void {
+    this.typeCodeFilterSubject.next(typeCode);
+  }
+
 }
