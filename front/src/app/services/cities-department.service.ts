@@ -3,6 +3,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+
+console.log('Environment:', environment);
+console.log('API URL:', environment.apiUrl);
+
 export interface City {
   id: number;
   name: string;
@@ -29,7 +33,8 @@ interface CityAPI {
   providedIn: 'root'
 })
 export class CitiesDepartmentService {
-  private readonly API_URL = environment.apiUrl;
+  //private readonly API_URL = environment.apiUrl;
+   private readonly API_URL = 'https://postcerebral-filomena-fructiferously.ngrok-free.dev/techPads/store/v1';
   private readonly CITY_ENDPOINT = `${this.API_URL}/city`;
   private readonly DEPARTMENT_ENDPOINT = `${this.API_URL}/department`;
 
