@@ -2,10 +2,12 @@ package com.core.core.controllers;
 
 import com.core.core.modules.Product;
 import com.core.core.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -44,7 +46,15 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    result.getFieldErrors().stream()
+                            .map(error -> "El campo '" + error.getField() + "' " + error.getDefaultMessage())
+                            .toList()
+            );
+        }
+
         Product newProduct = productService.createProduct(product);
 
         URI location = ServletUriComponentsBuilder
@@ -52,19 +62,30 @@ public class ProductController {
                 .path("/{code}")
                 .buildAndExpand(newProduct.getProCode())
                 .toUri();
+
         return ResponseEntity.created(location).body(newProduct);
     }
 
-    @PutMapping("/{code}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long code, @RequestBody Product product) {
-        Product updProduct = productService.updateProduct(code, product);
 
-        if(updProduct == null) {
+    @PutMapping("/{code}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long code, @Valid @RequestBody Product product, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    result.getFieldErrors()
+                            .stream()
+                            .map(error -> "El campo '" + error.getField() + "' " + error.getDefaultMessage())
+                            .toList()
+            );
+        }
+
+        Product updProduct = productService.updateProduct(code, product);
+        if (updProduct == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontro el producto con el codigo: " + code);
+                    .body("No se encontró el producto con el código: " + code);
         }
         return ResponseEntity.ok(updProduct);
     }
+
 
     @DeleteMapping("/{code}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long code) {
@@ -80,27 +101,46 @@ public class ProductController {
     //SECCION CON PL/SQL
 
     @PostMapping("/plsql")
-    public ResponseEntity<?> createProductPlSQL(@RequestBody Product product) {
-        try{
+    public ResponseEntity<?> createProductPlSQL(@Valid @RequestBody Product product, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    result.getFieldErrors()
+                            .stream()
+                            .map(error -> "El campo '" + error.getField() + "' " + error.getDefaultMessage())
+                            .toList()
+            );
+        }
+
+        try {
             productService.crearProductoProcedure(product);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(product);
+            return ResponseEntity.status(HttpStatus.CREATED).body(product);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al crear un producto (PL/SQL): " + e.getMessage());
+                    .body("Error al crear producto (PL/SQL): " + e.getMessage());
         }
     }
 
+
     @PutMapping("/plsql/{code}")
-    public ResponseEntity<?> updateProductPLSQL(@PathVariable Long code, @RequestBody Product product) {
+    public ResponseEntity<?> updateProductPLSQL(@PathVariable Long code, @Valid @RequestBody Product product, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    result.getFieldErrors()
+                            .stream()
+                            .map(error -> "El campo '" + error.getField() + "' " + error.getDefaultMessage())
+                            .toList()
+            );
+        }
+
         try {
             productService.modificarProductoProcedure(code, product);
-            return ResponseEntity.ok("Producto actualizado mediante procedimiento almacenado.");
+            return ResponseEntity.ok("Producto actualizado correctamente mediante PL/SQL.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al actualizar producto (PL/SQL): " + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/plsql/{code}")
     public ResponseEntity<?> deleteProductPLSQL(@PathVariable Long code) {
