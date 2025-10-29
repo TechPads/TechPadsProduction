@@ -135,6 +135,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createClient(User user, ClientDetail clientDetail) {
+        // Validaciones
         if (clientDetail.getCity() == null || clientDetail.getCity().getCityID() == null) {
             throw new RuntimeException("City es obligatorio");
         }
@@ -142,10 +143,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Department es obligatorio");
         }
 
-        // Llamada al procedimiento PL/SQL
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+
         userRepository.registrarUsuario(
                 user.getUsername(),
-                user.getPassword(),
+                encryptedPassword,
                 user.getEmail(),
                 user.getPhone(),
                 clientDetail.getFirstName(),
@@ -158,7 +160,6 @@ public class UserServiceImpl implements UserService {
                 clientDetail.getDepartment().getDepID()
         );
 
-        // Recuperar el usuario recién creado
         User createdUser = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("No se pudo recuperar el usuario creado"));
 
