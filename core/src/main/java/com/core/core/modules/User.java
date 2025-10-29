@@ -58,7 +58,7 @@ public class User {
         if (status == null) status = "A";
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, optional = true) 
     private ClientDetail clientDetail;
+
 }
