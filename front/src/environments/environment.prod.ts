@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://postcerebral-filomena-fructiferously.ngrok-free.dev/techPads/store/v1'
+  apiUrl: 'https://resumes-motorcycles-ports-biol.trycloudflare.com/techPads/store/v1'
 };
