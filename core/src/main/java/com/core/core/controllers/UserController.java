@@ -69,7 +69,6 @@ public class UserController {
             User user = client.getUser();
             ClientDetail clientDetail = client.getClientDetail();
 
-            // Validaciones rápidas
             if (user == null) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "El objeto 'user' es obligatorio"));
@@ -87,10 +86,8 @@ public class UserController {
                         .body(Map.of("error", "Department es obligatorio y debe tener un depID válido"));
             }
 
-            // Llamada al service
             User createdUser = userService.createClient(user, clientDetail);
 
-            // Construir URI de respuesta
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
@@ -100,7 +97,6 @@ public class UserController {
             return ResponseEntity.created(location).body(createdUser);
 
         } catch (Exception e) {
-            // Captura cualquier error inesperado
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));
         }
