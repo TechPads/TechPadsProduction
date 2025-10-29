@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
-import { catchError, tap, switchMap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
-// Interfaces (mantén las que ya tienes)
+// Interfaces
 export interface LoginRequest {
   username: string;
   password: string;
@@ -26,8 +26,8 @@ export interface RegisterRequest {
   clientDetail: {
     firstName: string;
     secondName: string;
-    firstLastName: string;
     secondLastName: string;
+    firstLastName: string;
     address: string;
     descAddress: string;
     city: {
@@ -98,32 +98,22 @@ export class AuthService {
           if (response && response.token) {
             this.saveToken(response.token);
             this.isAuthenticatedSubject.next(true);
-            console.log('Token guardado exitosamente');
+            
+       
+            const decoded = this.decodeToken(response.token);
+            const basicUser: User = {
+              id: 0, 
+              username: decoded.sub,
+              email: '', 
+              role: decoded.role,
+              phone: '',
+              createdAt: new Date().toISOString(),
+              status: 'ACTIVE'
+            };
+            this.setUser(basicUser);
+            
+            console.log('Login exitoso - Usuario creado desde token:', basicUser);
           }
-        }),
-        switchMap((response) => {
-
-          const decoded = this.decodeToken(response.token);
-          if (decoded && decoded.sub) {
-            return this.getUserData(decoded.sub).pipe(
-              catchError((error) => {
-                console.warn('No se pudieron cargar datos completos del usuario, usando datos del token');
-                const basicUser: User = {
-                  id: 0,
-                  username: decoded.sub,
-                  email: '',
-                  role: decoded.role,
-                  phone: '',
-                  createdAt: new Date().toISOString(),
-                  status: 'ACTIVE'
-                };
-                this.setUser(basicUser);
-                return of(response); 
-              }),
-              switchMap(() => of(response)) 
-            );
-          }
-          return of(response);
         }),
         catchError(this.handleError)
       );
@@ -160,7 +150,10 @@ export class AuthService {
     console.log('Enviando datos al backend:', clientData); 
 
     return this.http.post<User>(this.USERS_ENDPOINT, clientData).pipe(
-      tap((user) => console.log('Usuario registrado exitosamente:', user)),
+      tap((user) => {
+        console.log('Usuario registrado exitosamente:', user);
+        this.setUser(user);
+      }),
       catchError(this.handleError)
     );
   }
@@ -224,14 +217,26 @@ export class AuthService {
     }
   }
 
+  getUsernameFromToken(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decoded = this.decodeToken(token);
+      return decoded.sub;
+    } catch {
+      return null;
+    }
+  }
+
   // ============================================================
   // =====================  USUARIO  ============================
   // ============================================================
 
+ 
   getUserData(username: string): Observable<User> {
     return this.http.get<User>(`${this.USERS_ENDPOINT}/username/${username}`).pipe(
       tap((user) => {
-        console.log('Datos del usuario obtenidos:', user);
+        console.log('Datos completos del usuario obtenidos:', user);
         this.setUser(user);
       }),
       catchError((error) => {
@@ -239,6 +244,15 @@ export class AuthService {
         return throwError(() => error);
       })
     );
+  }
+
+  
+  refreshUserData(): Observable<User> {
+    const username = this.getUsernameFromToken();
+    if (!username) {
+      return throwError(() => new Error('No hay usuario autenticado'));
+    }
+    return this.getUserData(username);
   }
 
   private setUser(user: User): void {

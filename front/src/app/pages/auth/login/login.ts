@@ -44,49 +44,42 @@ export class Login implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.credentials.username || !this.credentials.password) {
-      this.errorMessage = 'Por favor completa todos los campos';
-      return;
-    }
-
-    this.errorMessage = '';
-    this.isLoading = true;
-
-    this.authService.login(this.credentials.username, this.credentials.password).subscribe({
-      next: (response) => {
-        console.log('Login exitoso');
-        
-        const token = response.token;
-        console.log('Token:', token);
-
-        // Decodificar token para obtener rol
-        const decodedToken: any = jwtDecode(token);
-        const role = decodedToken.role;
-        const username = decodedToken.sub;
-        console.log('Rol del usuario:', role);
-
-        this.isLoading = false;
-        
-        // Cerrar modal si es modal
-        if (this.isModal) {
-          this.close.emit();
-        }
-
-        // Redirigir según el rol
-        if (role === 'ADMIN') {
-          this.router.navigate(['/admin/dashboard']);
-        } else {
-          // Redirigir directamente a store sin esperar datos adicionales
-          this.router.navigate([this.returnUrl]);
-        }
-      },
-      error: (error) => {
-        console.error('Error en login:', error);
-        this.errorMessage = error.message || 'Usuario o contraseña incorrectos';
-        this.isLoading = false;
-      },
-    });
+  if (!this.credentials.username || !this.credentials.password) {
+    this.errorMessage = 'Por favor completa todos los campos';
+    return;
   }
+
+  this.errorMessage = '';
+  this.isLoading = true;
+
+  this.authService.login(this.credentials.username, this.credentials.password).subscribe({
+    next: (response) => {
+      console.log('Login exitoso');
+      
+      this.isLoading = false;
+      
+      
+      if (this.isModal) {
+        this.close.emit();
+      }
+
+
+      const role = this.authService.getUserRole();
+      
+   
+      if (role === 'ADMIN') {
+        this.router.navigate(['/admin/dashboard']);
+      } else {
+        this.router.navigate([this.returnUrl]);
+      }
+    },
+    error: (error) => {
+      console.error('Error en login:', error);
+      this.errorMessage = error.message || 'Usuario o contraseña incorrectos';
+      this.isLoading = false;
+    },
+  });
+}
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
