@@ -1,5 +1,6 @@
 package com.core.core.services;
 
+import com.core.core.modules.ClientDetail;
 import com.core.core.modules.User;
 import java.util.List;
 
@@ -15,5 +16,8 @@ public interface UserService {
     //LOGIN
     User getUserByUsername(String username);
     String login(String username, String password);
+
+    //PL/SQL
+    User createClient(User user, ClientDetail clientDetail);
 }
 

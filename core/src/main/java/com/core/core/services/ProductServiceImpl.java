@@ -41,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Ya existe un producto con el código " + product.getProCode());
         }
 
+        /*
         if (product.getProCode() == null) {
             Long nextCode = 1L;
             Optional<Long> maxCode = productRepository.findAll()
@@ -52,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
             }
             product.setProCode(nextCode);
         }
-
+        */
         return productRepository.save(product);
     }
 

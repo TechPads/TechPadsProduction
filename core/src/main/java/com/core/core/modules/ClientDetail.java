@@ -1,5 +1,6 @@
 package com.core.core.modules;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +22,7 @@ public class ClientDetail {
     @OneToOne
     @MapsId
     @JoinColumn(name = "USERID")
+    @JsonBackReference
     private User user;
 
     @Column(name = "FIRSTNAME", nullable = false)
