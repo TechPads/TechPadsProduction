@@ -48,14 +48,14 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    // CORS sencillo: ajusta allowedOriginPatterns según tu front
+  
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         
-        // AGREGAR TU DOMINIO DE VERCEL
+       
         config.setAllowedOriginPatterns(List.of(
             "http://localhost:4200",
             "https://delivery-shop1v-*.vercel.app",

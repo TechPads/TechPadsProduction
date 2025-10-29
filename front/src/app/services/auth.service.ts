@@ -14,13 +14,32 @@ export interface LoginResponse {
   token: string;
 }
 
+
 export interface RegisterRequest {
-  username: string;
-  password: string;
-  email: string;
-  role?: string;
-  phone: string;
+  user: {
+    username: string;
+    password: string;
+    email: string;
+    phone: string;
+    role?: string; 
+  };
+  clientDetail: {
+    firstName: string;
+    secondName: string;
+    firstLastName: string;
+    secondLastName: string;
+    address: string;
+    descAddress: string;
+    city: {
+      cityID: number;
+    };
+    department: {
+      depID: number;
+    };
+  };
 }
+
+
 
 export interface User {
   id: number;
@@ -46,7 +65,7 @@ export interface DecodedToken {
 export class AuthService {
   private readonly API_URL = environment.apiUrl;
   private readonly AUTH_ENDPOINT = `${this.API_URL}/auth`;
-  private readonly USERS_ENDPOINT = `${this.API_URL}/users`;
+  private readonly USERS_ENDPOINT = `${this.API_URL}/users/cli`; 
 
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
@@ -98,13 +117,37 @@ export class AuthService {
    * Registra un nuevo usuario
    */
   register(userData: RegisterRequest): Observable<User> {
-    const registerData = { ...userData, role: userData.role || 'USER' };
+  const clientData = {
+    user: {
+      username: userData.user.username,
+      password: userData.user.password,
+      email: userData.user.email,
+      phone: userData.user.phone,
+      role: userData.user.role || 'USER' 
+    },
+    clientDetail: {
+      firstName: userData.clientDetail.firstName,
+      secondName: userData.clientDetail.secondName,
+      firstLastName: userData.clientDetail.firstLastName,
+      secondLastName: userData.clientDetail.secondLastName,
+      address: userData.clientDetail.address,
+      descAddress: userData.clientDetail.descAddress,
+      city: {
+        cityID: userData.clientDetail.city.cityID
+      },
+      department: {
+        depID: userData.clientDetail.department.depID
+      }
+    }
+  };
 
-    return this.http.post<User>(this.USERS_ENDPOINT, registerData).pipe(
-      tap((user) => console.log('Usuario registrado:', user)),
-      catchError(this.handleError)
-    );
-  }
+  console.log('Enviando datos al backend:', clientData); 
+
+  return this.http.post<User>(this.USERS_ENDPOINT, clientData).pipe(
+    tap((user) => console.log('Usuario registrado:', user)),
+    catchError(this.handleError)
+  );
+}
 
   /**
    * Cierra la sesión del usuario

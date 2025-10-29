@@ -36,7 +36,6 @@ export class CitiesDepartmentService {
   
   
   private readonly API_URL = environment.apiUrl;
-  //private readonly API_URL = 'https://postcerebral-filomena-fructiferously.ngrok-free.dev/techPads/store/v1';
   private readonly CITY_ENDPOINT = `${this.API_URL}/city`;
   private readonly DEPARTMENT_ENDPOINT = `${this.API_URL}/department`;
 
