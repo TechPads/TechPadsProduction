@@ -4,16 +4,19 @@ import com.core.core.modules.Client;
 import com.core.core.modules.ClientDetail;
 import com.core.core.modules.User;
 import com.core.core.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -52,7 +55,17 @@ public class UserController {
     }
 
     @PostMapping("/adm")
-    public ResponseEntity<?> createUserAdm(@RequestBody User user) {
+    public ResponseEntity<?> createUserAdm(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            // Extraemos todos los mensajes de error y los devolvemos
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(
+                            fieldError -> fieldError.getField(),
+                            fieldError -> fieldError.getDefaultMessage()
+                    ));
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         User createdUser = userService.createUser(user);
 
         URI location = ServletUriComponentsBuilder
@@ -60,11 +73,20 @@ public class UserController {
                 .path("/{code}")
                 .buildAndExpand(createdUser.getId())
                 .toUri();
-        return ResponseEntity.ok(createdUser);
+        return ResponseEntity.created(location).body(createdUser);
     }
 
     @PostMapping("/cli")
-    public ResponseEntity<?> createClient(@RequestBody Client client) {
+    public ResponseEntity<?> createClient(@Valid @RequestBody Client client, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(
+                            fieldError -> fieldError.getField(),
+                            fieldError -> fieldError.getDefaultMessage()
+                    ));
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         try {
             User user = client.getUser();
             ClientDetail clientDetail = client.getClientDetail();
