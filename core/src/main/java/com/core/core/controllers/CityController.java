@@ -39,7 +39,7 @@ public class CityController {
         return ResponseEntity.ok(city);
     }
 
-    @GetMapping("/depment/{depId}")
+    @GetMapping("/department/{depId}")
     public ResponseEntity<List<City>> findByDepartment(@PathVariable Long depId) {
         List<City> cities = cityService.getCitiesByDepartment(depId);
         if (cities == null || cities.isEmpty()) {

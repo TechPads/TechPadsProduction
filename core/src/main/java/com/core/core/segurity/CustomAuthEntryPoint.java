@@ -21,7 +21,6 @@ public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // Mensaje claro y consistente
         response.getWriter().write("{\"error\": \"No autorizado. Token inválido, expirado o no enviado.\"}");
     }
 }
