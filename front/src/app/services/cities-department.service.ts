@@ -33,12 +33,18 @@ interface CityAPI {
   providedIn: 'root'
 })
 export class CitiesDepartmentService {
-  //private readonly API_URL = environment.apiUrl;
-   private readonly API_URL = 'https://postcerebral-filomena-fructiferously.ngrok-free.dev/techPads/store/v1';
+  
+  
+  private readonly API_URL = environment.apiUrl;
+  //private readonly API_URL = 'https://postcerebral-filomena-fructiferously.ngrok-free.dev/techPads/store/v1';
   private readonly CITY_ENDPOINT = `${this.API_URL}/city`;
   private readonly DEPARTMENT_ENDPOINT = `${this.API_URL}/department`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    console.log('Environment actual:', environment);
+    console.log('Production mode:', environment.production);
+    console.log('API URL:', environment.apiUrl);
+  }
 
   
   getDepartments(): Observable<Department[]> {

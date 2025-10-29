@@ -19,7 +19,7 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-
+    
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -27,15 +27,26 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {
-                })
+                .cors(cors -> {})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/users/**", "/public/**", "/city/**", "/department/**")
-                        .permitAll()
-                        // .requestMatchers("/auth/register").permitAll()
-                        .anyRequest().authenticated() // Todo lo demás protegido
+                        
+                        // ========== RUTAS PÚBLICAS (SIN TOKEN) ==========
+                        .requestMatchers(
+                            "/auth/**",
+                            "/users/**",
+                            "/public/**",
+                            "/city/**",
+                            "/department/**",
+                            "/techPads/store/v1/**",      
+                            "/techPads/products/v1/**",    
+                            "/techPads/orders/v1/**",      
+                            "/techPads/categories/v1/**"                    
+                        ).permitAll()
+                        
+                        // ========== TODO LO DEMÁS REQUIERE TOKEN ==========
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -44,7 +55,7 @@ public class SecurityConfig {
                             response.getWriter().write("{\"error\": \"No autorizado. Token inválido o ausente.\"}");
                         }))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
+        
         return http.build();
     }
 
@@ -54,22 +65,22 @@ public class SecurityConfig {
     }
 
     @Bean
-public CorsFilter corsFilter() {
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    CorsConfiguration config = new CorsConfiguration();
-
-    config.setAllowCredentials(true);
-    // AGREGAR TU DOMINIO DE VERCEL
-    config.setAllowedOriginPatterns(List.of(
-        "http://localhost:4200",
-        "https://delivery-shop1v-*.vercel.app",
-        "https://delivery-shop1v.vercel.app",
-        "https://*.vercel.app"
-    ));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-    source.registerCorsConfiguration("/**", config);
-    return new CorsFilter(source);
-}
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:4200",
+            "https://delivery-shop1v-*.vercel.app",
+            "https://delivery-shop1v.vercel.app",
+            "https://*.vercel.app"
+        ));
+        
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
 }
