@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
+import { catchError, tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-// Interfaces
+
+// Interfaces (mantén las que ya tienes)
 export interface LoginRequest {
   username: string;
   password: string;
@@ -13,7 +14,6 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string;
 }
-
 
 export interface RegisterRequest {
   user: {
@@ -39,8 +39,6 @@ export interface RegisterRequest {
   };
 }
 
-
-
 export interface User {
   id: number;
   username: string;
@@ -53,7 +51,7 @@ export interface User {
 }
 
 export interface DecodedToken {
-  sub: string; // username
+  sub: string;
   role: string;
   iat: number;
   exp: number;
@@ -100,14 +98,32 @@ export class AuthService {
           if (response && response.token) {
             this.saveToken(response.token);
             this.isAuthenticatedSubject.next(true);
-
-            // Decodificar token para obtener username
-            const decoded = this.decodeToken(response.token);
-            if (decoded && decoded.sub) {
-              // Guardar el username temporalmente para usar en el componente
-              localStorage.setItem('temp_username', decoded.sub);
-            }
+            console.log('Token guardado exitosamente');
           }
+        }),
+        switchMap((response) => {
+
+          const decoded = this.decodeToken(response.token);
+          if (decoded && decoded.sub) {
+            return this.getUserData(decoded.sub).pipe(
+              catchError((error) => {
+                console.warn('No se pudieron cargar datos completos del usuario, usando datos del token');
+                const basicUser: User = {
+                  id: 0,
+                  username: decoded.sub,
+                  email: '',
+                  role: decoded.role,
+                  phone: '',
+                  createdAt: new Date().toISOString(),
+                  status: 'ACTIVE'
+                };
+                this.setUser(basicUser);
+                return of(response); 
+              }),
+              switchMap(() => of(response)) 
+            );
+          }
+          return of(response);
         }),
         catchError(this.handleError)
       );
@@ -117,37 +133,37 @@ export class AuthService {
    * Registra un nuevo usuario
    */
   register(userData: RegisterRequest): Observable<User> {
-  const clientData = {
-    user: {
-      username: userData.user.username,
-      password: userData.user.password,
-      email: userData.user.email,
-      phone: userData.user.phone,
-      role: userData.user.role || 'USER' 
-    },
-    clientDetail: {
-      firstName: userData.clientDetail.firstName,
-      secondName: userData.clientDetail.secondName,
-      firstLastName: userData.clientDetail.firstLastName,
-      secondLastName: userData.clientDetail.secondLastName,
-      address: userData.clientDetail.address,
-      descAddress: userData.clientDetail.descAddress,
-      city: {
-        cityID: userData.clientDetail.city.cityID
+    const clientData = {
+      user: {
+        username: userData.user.username,
+        password: userData.user.password,
+        email: userData.user.email,
+        phone: userData.user.phone,
+        role: userData.user.role || 'USER' 
       },
-      department: {
-        depID: userData.clientDetail.department.depID
+      clientDetail: {
+        firstName: userData.clientDetail.firstName,
+        secondName: userData.clientDetail.secondName,
+        firstLastName: userData.clientDetail.firstLastName,
+        secondLastName: userData.clientDetail.secondLastName,
+        address: userData.clientDetail.address,
+        descAddress: userData.clientDetail.descAddress,
+        city: {
+          cityID: userData.clientDetail.city.cityID
+        },
+        department: {
+          depID: userData.clientDetail.department.depID
+        }
       }
-    }
-  };
+    };
 
-  console.log('Enviando datos al backend:', clientData); 
+    console.log('Enviando datos al backend:', clientData); 
 
-  return this.http.post<User>(this.USERS_ENDPOINT, clientData).pipe(
-    tap((user) => console.log('Usuario registrado:', user)),
-    catchError(this.handleError)
-  );
-}
+    return this.http.post<User>(this.USERS_ENDPOINT, clientData).pipe(
+      tap((user) => console.log('Usuario registrado exitosamente:', user)),
+      catchError(this.handleError)
+    );
+  }
 
   /**
    * Cierra la sesión del usuario
@@ -155,6 +171,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem('temp_username');
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/']);
@@ -211,11 +228,16 @@ export class AuthService {
   // =====================  USUARIO  ============================
   // ============================================================
 
- 
   getUserData(username: string): Observable<User> {
     return this.http.get<User>(`${this.USERS_ENDPOINT}/username/${username}`).pipe(
-      tap((user) => this.setUser(user)), // Guardar usuario al obtenerlo
-      catchError(this.handleError)
+      tap((user) => {
+        console.log('Datos del usuario obtenidos:', user);
+        this.setUser(user);
+      }),
+      catchError((error) => {
+        console.error('Error obteniendo datos del usuario:', error);
+        return throwError(() => error);
+      })
     );
   }
 

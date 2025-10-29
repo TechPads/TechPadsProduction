@@ -24,7 +24,7 @@ export class Login implements OnInit {
   isLoading = false;
   errorMessage = '';
   showPassword = false;
-  returnUrl: string = '/';
+  returnUrl: string = '/store';
   isModal: boolean = false;
 
   constructor(
@@ -34,7 +34,7 @@ export class Login implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/store';
     this.isModal = this.close.observed;
 
     // Si ya está logueado, redirigir directamente
@@ -44,61 +44,49 @@ export class Login implements OnInit {
   }
 
   onSubmit(): void {
-  if (!this.credentials.username || !this.credentials.password) {
-    this.errorMessage = 'Por favor completa todos los campos';
-    return;
-  }
+    if (!this.credentials.username || !this.credentials.password) {
+      this.errorMessage = 'Por favor completa todos los campos';
+      return;
+    }
 
-  this.errorMessage = '';
-  this.isLoading = true;
+    this.errorMessage = '';
+    this.isLoading = true;
 
-  this.authService.login(this.credentials.username, this.credentials.password).subscribe({
-    next: (response) => {
-      console.log('Login exitoso');
-      
-      const token = response.token;
-      console.log('Token:', token);
+    this.authService.login(this.credentials.username, this.credentials.password).subscribe({
+      next: (response) => {
+        console.log('Login exitoso');
+        
+        const token = response.token;
+        console.log('Token:', token);
 
-      // Decodificar token para obtener rol
-      const decodedToken: any = jwtDecode(token);
-      const role = decodedToken.role;
-      const username = decodedToken.sub;
-      console.log('Rol del usuario:', role);
+        // Decodificar token para obtener rol
+        const decodedToken: any = jwtDecode(token);
+        const role = decodedToken.role;
+        const username = decodedToken.sub;
+        console.log('Rol del usuario:', role);
 
-      // Obtener datos completos del usuario después del login exitoso
-      this.authService.getUserData(username).subscribe({
-        next: (user) => {
-          this.isLoading = false;
-          
-          if (this.isModal) {
-            this.close.emit();
-          }
-
-          if (role === 'ADMIN') {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
-            this.router.navigate([this.returnUrl]);
-          }
-        },
-        error: (error) => {
-          console.error('Error al obtener datos del usuario:', error);
-          this.isLoading = false;
-          // Aún así permitir navegación ya que el login fue exitoso
-          if (role === 'ADMIN') {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
-            this.router.navigate([this.returnUrl]);
-          }
+        this.isLoading = false;
+        
+        // Cerrar modal si es modal
+        if (this.isModal) {
+          this.close.emit();
         }
-      });
-    },
-    error: (error) => {
-      console.error('Error en login:', error);
-      this.errorMessage = error.message || 'Usuario o contraseña incorrectos';
-      this.isLoading = false;
-    },
-  });
-}
+
+        // Redirigir según el rol
+        if (role === 'ADMIN') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          // Redirigir directamente a store sin esperar datos adicionales
+          this.router.navigate([this.returnUrl]);
+        }
+      },
+      error: (error) => {
+        console.error('Error en login:', error);
+        this.errorMessage = error.message || 'Usuario o contraseña incorrectos';
+        this.isLoading = false;
+      },
+    });
+  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;

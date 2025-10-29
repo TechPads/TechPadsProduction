@@ -25,7 +25,7 @@ public class AuthController {
             String token = userService.login(credentials.get("username"), credentials.get("password"));
             return ResponseEntity.ok(Map.of("token", token));
         } catch (Exception e) {
-            e.printStackTrace(); // imprime en consola
+            e.printStackTrace(); 
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
