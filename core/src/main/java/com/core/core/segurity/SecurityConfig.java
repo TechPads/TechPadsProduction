@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/public/**", "/city/**", "/department/**").permitAll()
+                        .requestMatchers("/auth/**", "/public/**", "/city/**", "/department/**", "/users/**").permitAll()
                         .anyRequest().authenticated() // requiere token, pero no roles
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
