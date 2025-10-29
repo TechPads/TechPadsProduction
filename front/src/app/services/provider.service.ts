@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Provider {
   provId: number;
   provName: string;
@@ -13,7 +13,7 @@ export interface Provider {
   providedIn: 'root'
 })
 export class ProviderService {
-  private apiUrl = 'http://localhost:8080/techPads/store/v1/prov';
+  private apiUrl = `${environment.apiUrl}/prov`;
 
   constructor(private http: HttpClient) {}
 

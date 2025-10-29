@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
+import { environment } from '../../environments/environment';
 // Interfaces
 export interface LoginRequest {
   username: string;
@@ -44,7 +44,7 @@ export interface DecodedToken {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/techPads/store/v1';
+  private readonly API_URL = environment.apiUrl;
   private readonly AUTH_ENDPOINT = `${this.API_URL}/auth`;
   private readonly USERS_ENDPOINT = `${this.API_URL}/users`;
 
