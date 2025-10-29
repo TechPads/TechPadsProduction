@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-
+import { environment } from '../../environments/environment';
 export interface City {
   id: number;
   name: string;
@@ -29,9 +29,9 @@ interface CityAPI {
   providedIn: 'root'
 })
 export class CitiesDepartmentService {
-  private readonly API_URL = 'http://localhost:8080/techPads/store/v1';
+  private readonly API_URL = environment.apiUrl;
   private readonly CITY_ENDPOINT = `${this.API_URL}/city`;
-  private readonly DEPARTMENT_ENDPOINT = `${this.API_URL}/depment`;
+  private readonly DEPARTMENT_ENDPOINT = `${this.API_URL}/department`;
 
   constructor(private http: HttpClient) { }
 
@@ -95,7 +95,7 @@ export class CitiesDepartmentService {
    * Obtiene todas las ciudades de un departamento específico
    */
   getCitiesByDepartment(departmentId: number): Observable<City[]> {
-    const url = `${this.CITY_ENDPOINT}/depment/${departmentId}`;
+    const url = `${this.CITY_ENDPOINT}/department/${departmentId}`;
     console.log('Llamando a:', url);
     return this.http.get<CityAPI[]>(url)
       .pipe(

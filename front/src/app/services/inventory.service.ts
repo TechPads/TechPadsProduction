@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { environment } from '../../environments/environment';
 export interface ProductType {
   typeCode: number;
   typeName: string;
@@ -38,7 +38,7 @@ export interface InventoryItem {
   providedIn: 'root'  
 })
 export class InventoryService {
-  private apiUrl = 'http://localhost:8080/techPads/store/v1';
+  private apiUrl = environment.apiUrl;
   
   private typeCodeFilterSubject = new Subject<number | null>();
   typeCodeFilter$ = this.typeCodeFilterSubject.asObservable();
