@@ -18,7 +18,7 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-
+    
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // requiere token, pero no roles
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
+        
         return http.build();
     }
 
@@ -53,12 +53,19 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("http://localhost:4200"));
+        
+        // AGREGAR TU DOMINIO DE VERCEL
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:4200",
+            "https://delivery-shop1v-*.vercel.app",
+            "https://delivery-shop1v.vercel.app",
+            "https://*.vercel.app"
+        ));
+        
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
+        
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

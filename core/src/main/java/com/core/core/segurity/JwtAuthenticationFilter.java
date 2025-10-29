@@ -25,10 +25,10 @@ import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+    
     @Value("${jwt.secret}")
     private String jwtSecret;
-
+    
     private final UserService userService;
 
     private static final List<String> PUBLIC_PATHS = List.of(
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public JwtAuthenticationFilter(UserService userService) {
         this.userService = userService;
     }
-
+    
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
@@ -86,16 +86,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\": \"No se encontró token en la solicitud\"}");
             return;
         }
-
+        
         String token = authHeader.substring(7);
-
+        
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
+            
             String username = claims.getSubject();
             if (username != null) {
                 UsernamePasswordAuthenticationToken authentication =
@@ -125,5 +125,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // NO atrapamos Exception genérico: dejamos que otras excepciones suban al GlobalExceptionHandler
 
         filterChain.doFilter(request, response);
+    }
+    
+
+    private boolean isPublicPath(String path) {
+        return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
     }
 }
