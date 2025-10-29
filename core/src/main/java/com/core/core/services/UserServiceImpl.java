@@ -1,5 +1,6 @@
 package com.core.core.services;
 
+import com.core.core.modules.ClientDetail;
 import com.core.core.modules.User;
 import com.core.core.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -129,5 +130,42 @@ public class UserServiceImpl implements UserService {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    //PL/SQL
+
+    @Override
+    public User createClient(User user, ClientDetail clientDetail) {
+        // Validaciones
+        if (clientDetail.getCity() == null || clientDetail.getCity().getCityID() == null) {
+            throw new RuntimeException("City es obligatorio");
+        }
+        if (clientDetail.getDepartment() == null || clientDetail.getDepartment().getDepID() == null) {
+            throw new RuntimeException("Department es obligatorio");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+
+        userRepository.registrarUsuario(
+                user.getUsername(),
+                encryptedPassword,
+                user.getEmail(),
+                user.getPhone(),
+                clientDetail.getFirstName(),
+                clientDetail.getSecondName(),
+                clientDetail.getFirstLastName(),
+                clientDetail.getSecondLastName(),
+                clientDetail.getAddress(),
+                clientDetail.getDescAddress(),
+                clientDetail.getCity().getCityID(),
+                clientDetail.getDepartment().getDepID()
+        );
+
+        User createdUser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("No se pudo recuperar el usuario creado"));
+
+        return createdUser;
+    }
+
+
 
 }
