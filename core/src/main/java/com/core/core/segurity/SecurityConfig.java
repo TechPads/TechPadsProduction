@@ -39,13 +39,10 @@ public class SecurityConfig {
                             "/public/**",
                             "/city/**",
                             "/department/**",
-                            "/techPads/store/v1/**",      
-                            "/techPads/products/v1/**",    
-                            "/techPads/orders/v1/**",      
-                            "/techPads/categories/v1/**"                    
+                            "/techPads/**"  
                         ).permitAll()
                         
-                        // ========== TODO LO DEMÁS REQUIERE TOKEN ==========
+                        
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
@@ -70,6 +67,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         
+        // AGREGAR TU DOMINIO DE VERCEL
         config.setAllowedOriginPatterns(List.of(
             "http://localhost:4200",
             "https://delivery-shop1v-*.vercel.app",
