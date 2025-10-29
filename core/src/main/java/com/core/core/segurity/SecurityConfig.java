@@ -27,14 +27,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .cors(cors -> {
+                })
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/users/**", "/public/**", "/city/**", "/department/**").permitAll()
-                        //.requestMatchers("/auth/register").permitAll()
+                        .requestMatchers("/auth/**", "/users/**", "/public/**", "/city/**", "/department/**")
+                        .permitAll()
+                        // .requestMatchers("/auth/register").permitAll()
                         .anyRequest().authenticated() // Todo lo demás protegido
                 )
                 .exceptionHandling(ex -> ex
@@ -42,8 +42,7 @@ public class SecurityConfig {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setContentType("application/json");
                             response.getWriter().write("{\"error\": \"No autorizado. Token inválido o ausente.\"}");
-                        })
-                )
+                        }))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -60,7 +59,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(List.of("http://localhost:4200")); // Angular
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
