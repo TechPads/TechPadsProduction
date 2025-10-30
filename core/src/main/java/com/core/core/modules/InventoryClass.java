@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class InventoryClass {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // si tu BD permite identity
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "INVCODE", nullable = false)
     private Long invCode;
 
