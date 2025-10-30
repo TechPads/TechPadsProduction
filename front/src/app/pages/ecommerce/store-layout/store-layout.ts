@@ -52,17 +52,35 @@ export class StoreLayoutComponent implements OnInit {
   }
 
   filterByType(typeCode: number | null): void {
-    console.log('🎯 Filtrando por tipo:', typeCode);
+    console.log('🎯 StoreLayout - Filtrando por tipo:', typeCode);
     this.selectedTypeCode = typeCode;
-    this.inventoryService.filterByTypeCode(typeCode);
-    this.menuOpen = false; 
+    
+
+    if (this.router.url === '/store') {
+      console.log('📍 Ya en /store, aplicando filtro directo');
+      this.inventoryService.filterByTypeCode(typeCode);
+      this.menuOpen = false;
+      return;
+    }
+
+
+    this.router.navigate(['/store']).then((success) => {
+      if (success) {
+        console.log('📍 Navegación a /store exitosa, aplicando filtro');
+        setTimeout(() => {
+          this.inventoryService.filterByTypeCode(typeCode);
+          this.menuOpen = false;
+        }, 150);
+      } else {
+        console.error('❌ Error en navegación');
+      }
+    });
   }
 
   goToAdmin(): void {
     this.router.navigate(['/admin/dashboard']);
   }
 
- 
   logout(): void {
     this.authService.logout();
     this.isAdmin = false;
