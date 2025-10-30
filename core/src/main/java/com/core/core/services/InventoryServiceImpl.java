@@ -50,13 +50,17 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public boolean deleteInventory(Long code) {
-        Optional<InventoryClass> inventory = inventoryRepository.findById(code);
+    public boolean deactivateInventory(Long code) {
+        Optional<InventoryClass> inventoryOpt = inventoryRepository.findById(code);
 
-        if (inventory.isPresent()) {
-            inventoryRepository.deleteById(code);
+        if (inventoryOpt.isPresent()) {
+            InventoryClass inventory = inventoryOpt.get();
+            inventory.setStatus("I");
+            inventoryRepository.save(inventory);
             return true;
         }
+
         return false;
     }
+
 }

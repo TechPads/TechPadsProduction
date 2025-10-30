@@ -41,19 +41,6 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Ya existe un producto con el código " + product.getProCode());
         }
 
-        /*
-        if (product.getProCode() == null) {
-            Long nextCode = 1L;
-            Optional<Long> maxCode = productRepository.findAll()
-                    .stream()
-                    .map(Product::getProCode)
-                    .max(Long::compareTo);
-            if (maxCode.isPresent()) {
-                nextCode = maxCode.get() + 1;
-            }
-            product.setProCode(nextCode);
-        }
-        */
         return productRepository.save(product);
     }
 

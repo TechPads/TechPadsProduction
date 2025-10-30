@@ -37,9 +37,8 @@ public class InventoryClass {
     @Column(name = "INVDATE", nullable = false)
     private LocalDate invDate;
 
-    @NotBlank(message = "El estado es obligatorio")
     @Column(name = "INVSTATUS", nullable = false, length = 1, columnDefinition = "CHAR(1)")
-    private String status;
+    private String status = "A";
 
     @NotNull(message = "El producto es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
