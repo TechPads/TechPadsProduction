@@ -63,6 +63,13 @@ export const routes: Routes = [
             (m) => m.EditInventoryComponent
           ),
       },
+      {
+        path: 'inventory/create',
+        loadComponent: () =>
+          import('./pages/admin/inventory/register-inventory/register-inventory').then(
+            (m) => m.RegisterInventoryComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

@@ -61,6 +61,7 @@ export class EditInventoryComponent implements OnInit {
 
     return ((sellingPrice - basePrice) / basePrice) * 100;
   }
+
   loadInventoryData(invCode: number): void {
     this.loading = true;
     this.inventoryService.getInventoryItem(invCode).subscribe({
@@ -104,19 +105,22 @@ export class EditInventoryComponent implements OnInit {
       return;
     }
 
-    const invCode = this.inventoryItem.invCode;
+    // CORRECCIÓN: Usar this.inventoryCode en lugar de this.inventoryItem.invCode
+    if (!this.inventoryCode) {
+      this.showToastMessage('Código de inventario no válido', 'error');
+      return;
+    }
+
+    const invCode = this.inventoryCode;
     const providerId = this.inventoryItem.provider?.provId;
 
-    // ✅ Envía SOLO los campos que el backend debe actualizar
     const updatedInventory = {
       invStock: Number(this.inventoryForm.get('invStock')?.value),
       sellingPrice: Number(this.inventoryForm.get('sellingPrice')?.value),
       invDate: this.inventoryForm.get('invDate')?.value,
     };
 
-    console.log('📦 Actualizando inventario:', updatedInventory);
-
-    this.inventoryService.editInventoryItem(invCode, updatedInventory).subscribe({
+    this.inventoryService.updateInventoryItem(invCode, updatedInventory).subscribe({
       next: (response) => {
         console.log('✅ Inventario actualizado:', response);
 

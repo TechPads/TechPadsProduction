@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 export interface Provider {
-  provId: number;
+  provId?: number;
   provName: string;
   provEmail: string;
   provPhone: string;

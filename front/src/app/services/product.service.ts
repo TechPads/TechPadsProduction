@@ -41,7 +41,7 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/product/${proCode}`);
   }
   deleteProductById(proCode: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/product/${proCode}`);
+    return this.http.delete<void>(`${this.apiUrl}/product/plsql/${proCode}`);
   }
 
   createProduct(product: Product): Observable<Product> {
