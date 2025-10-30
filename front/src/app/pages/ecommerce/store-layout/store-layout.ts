@@ -40,10 +40,14 @@ export class StoreLayoutComponent implements OnInit {
     this.categoriaExpandida = !this.categoriaExpandida;
   }
 
-  filterByType(typeCode: number | null): void {
-    this.selectedTypeCode = typeCode;
-    this.inventoryService.filterByTypeCode(typeCode);
-  }
+  
+
+filterByType(typeCode: number | null): void {
+  console.log('🎯 Filtrando por tipo:', typeCode);
+  this.selectedTypeCode = typeCode;
+  this.inventoryService.filterByTypeCode(typeCode);
+  this.menuOpen = false; 
+}
 
   goToAdmin(): void {
     this.router.navigate(['/admin/dashboard']);

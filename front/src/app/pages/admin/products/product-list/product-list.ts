@@ -60,18 +60,48 @@ export class ProductListComponent implements OnInit {
   deleteProduct(): void {
     if (!this.productToDelete) return;
 
-    this.productService.deleteProductById(this.productToDelete.proCode).subscribe({
+    const productData = {
+      ...this.productToDelete,
+      status: 'I'
+    };
+ console.log('Datos a enviar:', productData);
+    this.productService.updateProduct(this.productToDelete.proCode, productData).subscribe({
       next: () => {
-        this.showToastMessage('Producto eliminado correctamente', 'success');
-        this.products = this.products.filter(p => p.proCode !== this.productToDelete?.proCode);
+        this.showToastMessage('Producto desactivado correctamente', 'success');
+        const index = this.products.findIndex(p => p.proCode === this.productToDelete?.proCode);
+        if (index !== -1) {
+          this.products[index].status = 'I';
+        }
         this.showDeleteModal = false;
         this.productToDelete = null;
       },
       error: (err: any) => {
-        const errorMsg = err?.error?.message || 'Error al eliminar el producto';
+        const errorMsg = err?.error?.message || 'Error al desactivar el producto';
         this.showToastMessage(errorMsg, 'error');
         this.showDeleteModal = false;
         this.productToDelete = null;
+      }
+    });
+  }
+
+  // Método para activar producto
+  activateProduct(product: Product): void {
+    const productData = {
+      ...product,
+      status: 'A'
+    };
+
+    this.productService.updateProduct(product.proCode, productData).subscribe({
+      next: () => {
+        this.showToastMessage('Producto activado correctamente', 'success');
+        const index = this.products.findIndex(p => p.proCode === product.proCode);
+        if (index !== -1) {
+          this.products[index].status = 'A';
+        }
+      },
+      error: (err: any) => {
+        const errorMsg = err?.error?.message || 'Error al activar el producto';
+        this.showToastMessage(errorMsg, 'error');
       }
     });
   }

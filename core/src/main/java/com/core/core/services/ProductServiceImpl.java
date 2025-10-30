@@ -59,18 +59,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long code, Product product) {
-        Product existingProduct = productRepository.findById(code)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con codigo: " + code));
-
+    Product existingProduct = productRepository.findById(code).orElse(null);
+    if (existingProduct != null) {
         existingProduct.setProName(product.getProName());
-        existingProduct.setProPrice(product.getProPrice());
         existingProduct.setProImg(product.getProImg());
+        existingProduct.setProPrice(product.getProPrice());
         existingProduct.setDescript(product.getDescript());
         existingProduct.setProMark(product.getProMark());
+        existingProduct.setStatus(product.getStatus()); 
         existingProduct.setProductType(product.getProductType());
-
         return productRepository.save(existingProduct);
     }
+    return null;
+}
 
     @Override
     public boolean deleteProduct(Long code) {

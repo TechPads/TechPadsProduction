@@ -16,7 +16,7 @@
 <div class="products-grid">
   <div 
     class="product-card" 
-    *ngFor="let item of inventoryItems"
+    *ngFor="let item of filteredItems"
     (click)="viewProductDetail(item.product.proCode)"
     role="button"
     tabindex="0"
@@ -54,7 +54,7 @@
 </div>
 
 <!-- Empty State -->
-<div class="empty-state" *ngIf="inventoryItems.length === 0">
+<div class="empty-state" *ngIf="filteredItems.length === 0">
   <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
     <circle cx="12" cy="12" r="10"></circle>
     <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
