@@ -1,0 +1,193 @@
+<div class="form-container">
+  <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()" class="inventory-form" novalidate>
+    <h2>Registrar Inventario</h2>
+
+    <!-- Estado de carga -->
+    <div *ngIf="loadingProducts || loadingProviders || loadingInventory" class="loading-state">
+      <p>Cargando datos...</p>
+    </div>
+
+    <!-- Producto -->
+    <div class="form-group">
+      <label>Producto *</label>
+      <select formControlName="productCode" [disabled]="loadingProducts || loadingInventory">
+        <option value="">Selecciona un producto</option>
+        <option *ngFor="let product of availableProducts" [value]="product.proCode">
+          {{ product.proName }} - {{ product.proMark }} ({{ product.productType.typeName }})
+        </option>
+      </select>
+      <div *ngIf="submitted && inventoryForm.controls['productCode'].invalid" class="error-message">
+        <small>Selecciona un producto.</small>
+      </div>
+      
+      <div *ngIf="availableProducts.length === 0 && !loadingProducts" class="info-message">
+        <small>No hay productos disponibles para registrar. Todos los productos ya tienen inventario.</small>
+      </div>
+      <div *ngIf="availableProducts.length > 0" class="helper-text">
+        <small>{{ availableProducts.length }} producto(s) disponible(s) para registro</small>
+      </div>
+    </div>
+
+    <!-- Información del Producto Seleccionado -->
+    <div class="product-preview" *ngIf="previewImage">
+      <h4>Vista Previa del Producto</h4>
+      <div class="preview-content">
+        <img [src]="previewImage" alt="Vista previa del producto" class="preview-image" />
+        <div class="product-info">
+          <p><strong>Producto:</strong> {{ getSelectedProduct()?.proName || '' }}</p>
+          <p><strong>Precio Base:</strong> {{ (getSelectedProduct()?.proPrice | currency:'COP':'symbol':'1.0-0') || '' }}</p>
+          <p><strong>Marca:</strong> {{ getSelectedProduct()?.proMark || '' }}</p>
+          <p><strong>Categoría:</strong> {{ getSelectedProduct()?.productType?.typeName || '' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selección de Proveedor -->
+    <div class="provider-section">
+      <h3>Información del Proveedor</h3>
+      
+      <div class="form-group">
+        <label>Tipo de Proveedor *</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" formControlName="providerSelection" value="existing" />
+            <span>Seleccionar proveedor existente</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" formControlName="providerSelection" value="new" />
+            <span>Crear nuevo proveedor</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Proveedor Existente -->
+      <div *ngIf="!showNewProviderForm" class="form-group">
+        <label>Proveedor Existente *</label>
+        <select formControlName="existingProviderId" [disabled]="loadingProviders">
+          <option value="">Selecciona un proveedor</option>
+          <option *ngFor="let provider of providers" [value]="provider.provId">
+            {{ provider.provName }} - {{ provider.provEmail }} ({{ provider.provPhone }})
+          </option>
+        </select>
+        <div *ngIf="fieldErrors['existingProviderId']" class="error-message">
+          <small>{{ fieldErrors['existingProviderId'] }}</small>
+        </div>
+        <div *ngIf="submitted && inventoryForm.controls['existingProviderId'].invalid && !fieldErrors['existingProviderId']" class="error-message">
+          <small>Selecciona un proveedor.</small>
+        </div>
+        <div *ngIf="providers.length === 0 && !loadingProviders" class="info-message">
+          <small>No hay proveedores registrados. Crea uno nuevo.</small>
+        </div>
+      </div>
+
+      <!-- Nuevo Proveedor -->
+      <div *ngIf="showNewProviderForm" class="new-provider-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre del Proveedor *</label>
+            <input formControlName="newProvName" type="text" placeholder="Ej: Distribuidora Tech S.A.S." 
+                   (input)="onInputText($event, 'newProvName')" maxlength="80" />
+            <div *ngIf="fieldErrors['newProvName']" class="error-message">
+              <small>{{ fieldErrors['newProvName'] }}</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input formControlName="newProvEmail" type="email" placeholder="Ej: contacto@distribuidora.com" 
+                   (input)="onInputText($event, 'newProvEmail')" maxlength="80" />
+            <div *ngIf="fieldErrors['newProvEmail']" class="error-message">
+              <small>{{ fieldErrors['newProvEmail'] }}</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono *</label>
+            <input formControlName="newProvPhone" type="tel" placeholder="Ej: 3001234567" 
+                   maxlength="10" (input)="onInputNumber($event, 'newProvPhone')" />
+            <div *ngIf="fieldErrors['newProvPhone']" class="error-message">
+              <small>{{ fieldErrors['newProvPhone'] }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del Inventario -->
+    <div class="inventory-main-info">
+      <h3>Información del Inventario</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Stock Inicial *</label>
+          <input formControlName="invStock" type="text" placeholder="Ej: 100" 
+                 (input)="onInputNumber($event, 'invStock')" class="no-spin" />
+          <div *ngIf="fieldErrors['invStock']" class="error-message">
+            <small>{{ fieldErrors['invStock'] }}</small>
+          </div>
+          <div *ngIf="submitted && inventoryForm.controls['invStock'].invalid && !fieldErrors['invStock']" class="error-message">
+            <small>El stock inicial es obligatorio.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Precio de Venta *</label>
+          <input formControlName="sellingPrice" type="text" placeholder="Ej: 7500000" 
+                 (input)="onInputNumber($event, 'sellingPrice')" class="no-spin" />
+          <div *ngIf="fieldErrors['sellingPrice']" class="error-message">
+            <small>{{ fieldErrors['sellingPrice'] }}</small>
+          </div>
+          <div *ngIf="submitted && inventoryForm.controls['sellingPrice'].invalid && !fieldErrors['sellingPrice']" class="error-message">
+            <small>El precio de venta es obligatorio.</small>
+          </div>
+          <div *ngIf="getMargin() !== null" class="margin-info">
+            <small [class.positive]="(getMargin() || 0) > 0" [class.negative]="(getMargin() || 0) < 0">
+              Margen: {{ getMargin() | number:'1.2-2' }}%
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de Registro *</label>
+          <input formControlName="invDate" type="date" [max]="getCurrentDate()" />
+          <div *ngIf="fieldErrors['invDate']" class="error-message">
+            <small>{{ fieldErrors['invDate'] }}</small>
+          </div>
+          <div *ngIf="submitted && inventoryForm.controls['invDate'].invalid && !fieldErrors['invDate']" class="error-message">
+            <small>La fecha de registro es obligatoria.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="router.navigate(['/admin/inventory/list'])">
+        Cancelar
+      </button>
+      <button 
+        type="submit" 
+        class="btn-submit" 
+        [disabled]="loadingProducts || loadingProviders || loadingInventory || availableProducts.length === 0"
+      >
+        {{ (loadingProducts || loadingProviders || loadingInventory) ? 'Cargando...' : 'Registrar Inventario' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- TOAST -->
+<div *ngIf="showToast" class="toast" [ngClass]="toastType">
+  <img
+    *ngIf="toastType === 'success'"
+    class="toast-icon"
+    src="https://cdn-icons-png.flaticon.com/512/845/845646.png"
+    alt="Éxito"
+  />
+  <img
+    *ngIf="toastType === 'error'"
+    class="toast-icon"
+    src="https://cdn-icons-png.flaticon.com/512/463/463612.png"
+    alt="Error"
+  />
+  <p>{{ toastMessage }}</p>
+</div>

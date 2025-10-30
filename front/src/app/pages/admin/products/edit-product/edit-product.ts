@@ -32,7 +32,6 @@ export class EditProductComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
- 
     this.productForm = this.fb.group({
       proCode: [{ value: '', disabled: true }],
       proName: ['', [Validators.required, Validators.minLength(2)]],
@@ -41,9 +40,9 @@ export class EditProductComponent implements OnInit {
       proMark: ['', [Validators.required, Validators.minLength(2)]],
       descript: ['', [Validators.required, Validators.minLength(5)]],
       typeCode: ['', Validators.required],
+      status: ['A', Validators.required]
     });
 
-    
     this.productService.getProductTypes().subscribe({
       next: (types: ProductType[]) => {
         this.productTypes = types;
@@ -56,15 +55,13 @@ export class EditProductComponent implements OnInit {
       },
     });
 
-  
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.productCode = Number(id);
         this.loadProductData(this.productCode);
       }
     });
-
 
     this.productForm.get('proImg')?.valueChanges.subscribe((url: string) => {
       this.previewImage = url;
@@ -83,6 +80,7 @@ export class EditProductComponent implements OnInit {
           proMark: product.proMark,
           descript: product.descript,
           typeCode: product.productType?.typeCode || '',
+          status: product.status || 'A', // ✅ Agregar esta línea
         });
 
         this.previewImage = product.proImg || '';
@@ -109,47 +107,55 @@ export class EditProductComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.submitted = true;
+  this.submitted = true;
 
-    if (this.productForm.invalid) {
-      this.showToastMessage('Por favor completa todos los campos correctamente.', 'error');
-      return;
-    }
-
-    const formValue = this.productForm.getRawValue();
-    const selectedType = this.productTypes.find((t) => t.typeCode === Number(formValue.typeCode));
-
-    if (!selectedType) {
-      this.showToastMessage('Tipo de producto inválido.', 'error');
-      return;
-    }
-
-    const productData: Product = {
-      proCode: Number(formValue.proCode),
-      proName: formValue.proName,
-      descript: formValue.descript,
-      proImg: formValue.proImg,
-      proMark: formValue.proMark,
-      proPrice: Number(formValue.proPrice),
-      productType: selectedType,
-    };
-
-    this.productService.editProduct(productData).subscribe({
-      next: () => {
-        this.showToastMessage('Producto actualizado correctamente.', 'success');
-        setTimeout(() => {
-          this.router.navigate(['/admin/products/list']);
-        }, 1500);
-      },
-      error: (err: any) => {
-        const backendError =
-          typeof err.error === 'string'
-            ? err.error
-            : err?.error?.message || 'Error al actualizar el producto.';
-        this.showToastMessage(backendError, 'error');
-      },
-    });
+  if (this.productForm.invalid) {
+    this.showToastMessage('Por favor completa todos los campos correctamente.', 'error');
+    return;
   }
+
+  
+  if (this.productCode === null) {
+    this.showToastMessage('Error: Código de producto no válido', 'error');
+    return;
+  }
+
+  const formValue = this.productForm.getRawValue();
+  const selectedType = this.productTypes.find((t) => t.typeCode === Number(formValue.typeCode));
+
+  if (!selectedType) {
+    this.showToastMessage('Tipo de producto inválido.', 'error');
+    return;
+  }
+
+  const productData: Product = {
+    proCode: Number(formValue.proCode),
+    proName: formValue.proName,
+    descript: formValue.descript,
+    proImg: formValue.proImg,
+    proMark: formValue.proMark,
+    proPrice: Number(formValue.proPrice),
+    status: formValue.status, 
+    productType: selectedType,
+  };
+
+ 
+  this.productService.updateProduct(this.productCode, productData).subscribe({
+    next: () => {
+      this.showToastMessage('Producto actualizado correctamente.', 'success');
+      setTimeout(() => {
+        this.router.navigate(['/admin/products/list']);
+      }, 1500);
+    },
+    error: (err: any) => {
+      const backendError =
+        typeof err.error === 'string'
+          ? err.error
+          : err?.error?.message || 'Error al actualizar el producto.';
+      this.showToastMessage(backendError, 'error');
+    },
+  });
+}
 
   showToastMessage(message: string, type: 'success' | 'error'): void {
     this.toastMessage = message;

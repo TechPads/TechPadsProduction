@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class StoreComponent implements OnInit, OnDestroy {
   inventoryItems: InventoryItem[] = [];
+  filteredItems: InventoryItem[] = [];
   private filterSubscription?: Subscription;
 
   constructor(
@@ -24,7 +25,10 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.loadInventory();
    
     this.filterSubscription = this.inventoryService.typeCodeFilter$.subscribe(
-      typeCode => this.filterByType(typeCode)
+      (typeCode: number | null) => {
+        console.log('🔄 StoreComponent recibió filtro:', typeCode);
+        this.filterByType(typeCode);
+      }
     );
   }
 
@@ -34,19 +38,31 @@ export class StoreComponent implements OnInit, OnDestroy {
 
   loadInventory(): void {
     this.inventoryService.getAvailableInventory().subscribe({
-      next: (data: any) => this.inventoryItems = data,
+      next: (data: InventoryItem[]) => {
+        console.log('📦 StoreComponent - Inventario cargado:', data.length, 'items');
+        this.inventoryItems = data;
+        this.filteredItems = data; 
+      },
       error: (err: any) => console.error('Error cargando inventario', err)
     });
   }
 
   filterByType(typeCode: number | null): void {
+    console.log('🎯 StoreComponent - Aplicando filtro:', typeCode);
+    console.log('📊 Items disponibles para filtrar:', this.inventoryItems.length);
+    
     if (typeCode === null) {
-      this.loadInventory();
+      // Mostrar todos los productos activos
+      this.filteredItems = this.inventoryItems;
+      console.log('📋 Mostrando todos los productos:', this.filteredItems.length);
     } else {
-      this.inventoryService.getInventoryByType(typeCode).subscribe({
-        next: (data: any) => this.inventoryItems = data,
-        error: (err: any) => console.error('Error filtrando productos', err)
+      // Filtrar por tipo
+      this.filteredItems = this.inventoryItems.filter(item => {
+        const matchesType = item.product.productType.typeCode === typeCode;
+        console.log(`🔍 ${item.product.proName} - Tipo: ${item.product.productType.typeCode}, Coincide: ${matchesType}`);
+        return matchesType;
       });
+      console.log('📋 Productos filtrados:', this.filteredItems.length);
     }
   }
 
@@ -58,11 +74,8 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.router.navigate(['/store/product', productCode]);
   }
 
-
   addToCart(event: Event, item: InventoryItem): void {
     event.stopPropagation(); 
     console.log('Producto agregado al carrito:', item);
- 
-    // this.cartService.addToCart(item);
   }
 }

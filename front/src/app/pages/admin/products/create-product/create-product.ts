@@ -32,6 +32,7 @@ export class CreateProductComponent implements OnInit {
       proMark: ['', [Validators.required, Validators.minLength(2)]],
       descript: ['', [Validators.required, Validators.minLength(5)]],
       typeCode: ['', Validators.required],
+      status: ['A', Validators.required]
     });
 
    
@@ -83,6 +84,7 @@ export class CreateProductComponent implements OnInit {
       proMark: productData.proMark,
       proPrice: productData.proPrice,
       productType: selectedType,
+      status: productData.status
     };
 
     this.productService.createProduct(newProduct).subscribe({

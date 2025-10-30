@@ -18,7 +18,7 @@
 
     <div class="header-content">
       <h1>Gestión de Productos</h1>
-      <p class="subtitle">Selecciona un producto para editarlo o eliminarlo</p>
+      <p class="subtitle">Selecciona un producto para editarlo o cambiar su estado</p>
     </div>
   </div>
 
@@ -33,7 +33,12 @@
 
   <!-- Products Grid -->
   <div class="products-grid" *ngIf="products.length > 0">
-    <div class="product-card" *ngFor="let product of products">
+    <div class="product-card" *ngFor="let product of products" [class.inactive]="product.status === 'I'">
+      <!-- Status Badge -->
+      <div class="status-badge" [class.active]="product.status === 'A'" [class.inactive]="product.status === 'I'">
+        {{ product.status === 'A' ? 'Activo' : 'Inactivo' }}
+      </div>
+
       <!-- Product Image -->
       <div class="product-image">
         <img [src]="product.proImg" [alt]="product.proName" />
@@ -63,12 +68,25 @@
           </svg>
           Editar
         </button>
-        <button class="btn-delete" (click)="confirmDelete(product)">
+        
+        <!-- Botón para activar/desactivar -->
+        <button *ngIf="product.status === 'A'" 
+                class="btn-deactivate" 
+                (click)="confirmDelete(product)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
           </svg>
-          Eliminar
+          Desactivar
+        </button>
+        
+        <button *ngIf="product.status === 'I'" 
+                class="btn-activate" 
+                (click)="activateProduct(product)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Activar
         </button>
       </div>
     </div>
@@ -79,21 +97,21 @@
 <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
-      <h2>¿Eliminar producto?</h2>
-      <p>¿Estás seguro de que deseas eliminar <strong>{{ productToDelete?.proName }}</strong>? Esta acción no se puede deshacer.</p>
+      <h2>¿Desactivar producto?</h2>
+      <p>¿Estás seguro de que deseas desactivar <strong>{{ productToDelete?.proName }}</strong>? El producto ya no será visible en la tienda.</p>
     </div>
 
     <div class="modal-actions">
       <button class="btn-modal-cancel" (click)="cancelDelete()">
         Cancelar
       </button>
-      <button class="btn-modal-delete" (click)="deleteProduct()">
-        Eliminar
+      <button class="btn-modal-deactivate" (click)="deleteProduct()">
+        Desactivar
       </button>
     </div>
   </div>
