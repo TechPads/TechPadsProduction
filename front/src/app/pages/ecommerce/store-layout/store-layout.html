@@ -13,9 +13,51 @@
           <path d="m21 21-4.35-4.35"></path>
         </svg>
       </button>
-      <button class="icon-btn profile-btn" (click)="goToAdmin()">
-        <div class="avatar"></div>
+      
+      <!-- ✅ Botón Admin solo visible para administradores -->
+      <button 
+        *ngIf="isAdmin" 
+        class="icon-btn profile-btn" 
+        (click)="goToAdmin()"
+        title="Panel de Administración">
+        <div class="avatar admin-avatar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15l-8-4.5V5l8 4.5 8-4.5v5.5L12 15z"></path>
+            <path d="M12 15v6"></path>
+            <path d="M16 17l4 2"></path>
+            <path d="M8 17l-4 2"></path>
+          </svg>
+        </div>
       </button>
+
+      <!-- ✅ Botón de perfil normal para usuarios no admin -->
+      <button 
+        *ngIf="!isAdmin && authService.isLoggedIn()" 
+        class="icon-btn profile-btn"
+        title="Mi Perfil">
+        <div class="avatar user-avatar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+      </button>
+
+      <!-- ✅ Botón de Login para usuarios no autenticados -->
+      <button 
+        *ngIf="!authService.isLoggedIn()" 
+        class="icon-btn login-btn"
+        (click)="router.navigate(['/auth/login'])"
+        title="Iniciar Sesión">
+        <div class="avatar login-avatar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
+          </svg>
+        </div>
+      </button>
+
       <button class="icon-btn cart-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1"></circle>
@@ -42,19 +84,36 @@
           </svg>
           <span>Tienda</span>
         </a>
-        <a href="#" class="nav-item">
+        
+        
+        
+        <!-- ✅ Enlace de Login para usuarios no autenticados -->
+        <a 
+          *ngIf="!authService.isLoggedIn()" 
+          href="javascript:void(0)" 
+          class="nav-item"
+          (click)="router.navigate(['/auth/login'])">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
           </svg>
-          <span>Sobre Nosotros</span>
+          <span>Iniciar Sesión</span>
         </a>
-        <a href="#" class="nav-item">
+        
+        <!-- ✅ Vista Administrador solo para administradores -->
+        <a 
+          *ngIf="isAdmin" 
+          href="javascript:void(0)" 
+          class="nav-item admin-nav-item"
+          (click)="goToAdmin()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M12 15l-8-4.5V5l8 4.5 8-4.5v5.5L12 15z"></path>
+            <path d="M12 15v6"></path>
+            <path d="M16 17l4 2"></path>
+            <path d="M8 17l-4 2"></path>
           </svg>
-          <span>Mi Cuenta</span>
+          <span>Vista Administrador</span>
         </a>
         
         <div class="nav-item expandable" (click)="toggleCategoria()">
@@ -87,6 +146,22 @@
             [class.active]="selectedTypeCode === type.typeCode"
             (click)="filterByType(type.typeCode)">
             {{ type.typeName }}
+          </a>
+        </div>
+
+        <!-- ✅ Botón de Cerrar Sesión al final, solo para usuarios autenticados -->
+        <div class="logout-section" *ngIf="authService.isLoggedIn()">
+          <div class="nav-divider"></div>
+          <a 
+            href="javascript:void(0)" 
+            class="nav-item logout-item"
+            (click)="logout()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Cerrar Sesión</span>
           </a>
         </div>
       </nav>
