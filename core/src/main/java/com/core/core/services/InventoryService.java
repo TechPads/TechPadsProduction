@@ -10,6 +10,6 @@ public interface InventoryService {
     InventoryClass getInventory(Long id);
     InventoryClass createInventory(InventoryClass inventoryClass);
     InventoryClass updateInventory(Long code, InventoryClass inventoryClass);
-    boolean deleteInventory(Long code);
+    boolean deactivateInventory(Long code);
 
 }

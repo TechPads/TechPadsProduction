@@ -83,13 +83,14 @@ public class InventoryController {
         return ResponseEntity.ok(newInventory);
     }
 
-    @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteInventory(@PathVariable Long code) {
-        boolean deleted = inventoryService.deleteInventory(code);
-        if(!deleted){
+    @PutMapping("/{code}/desactivar")
+    public ResponseEntity<?> deactivateInventory(@PathVariable Long code) {
+        boolean updated = inventoryService.deactivateInventory(code);
+        if (!updated) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se encontró el inventario con el código: " + code);
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Inventario desactivado correctamente");
     }
+
 }
