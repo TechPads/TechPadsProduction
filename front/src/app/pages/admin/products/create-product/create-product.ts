@@ -32,7 +32,7 @@ export class CreateProductComponent implements OnInit {
           Validators.required,
           Validators.minLength(2),
           Validators.maxLength(30),
-          Validators.pattern(/^(?!\s*$)[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,30}$/),
+          Validators.pattern(/^(?!\s*$)[A-Za-zÁÉÍÓÚáéíóúñÑ0-9 ]{2,30}$/),
         ],
       ],
       proImg: [
