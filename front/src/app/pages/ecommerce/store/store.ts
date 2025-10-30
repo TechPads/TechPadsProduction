@@ -24,10 +24,9 @@ export class StoreComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('🏪 StoreComponent inicializado');
+
     this.loadInventory();
     
-    // ✅ Suscribirse a cambios de filtro
     this.filterSubscription = this.inventoryService.typeCodeFilter$.subscribe(
       (typeCode: number | null) => {
         console.log('🔄 StoreComponent recibió filtro:', typeCode);
@@ -100,8 +99,8 @@ export class StoreComponent implements OnInit, OnDestroy {
     return `$${price.toLocaleString('es-CO')}`;
   }
 
-  viewProductDetail(productCode: number): void {
-    this.router.navigate(['/store/product', productCode]);
+  viewProductDetail(invCode: number): void {
+    this.router.navigate(['/store/product', invCode]);
   }
 
   addToCart(event: Event, item: InventoryItem): void {

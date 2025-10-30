@@ -17,11 +17,11 @@
   <div 
     class="product-card" 
     *ngFor="let item of filteredItems"
-    (click)="viewProductDetail(item.product.proCode)"
+    (click)="viewProductDetail(item.invCode!)"
     role="button"
     tabindex="0"
-    (keydown.enter)="viewProductDetail(item.product.proCode)">
-    
+    (keydown.enter)="viewProductDetail(item.invCode!)">
+
     <div class="product-image">
       <img 
         [src]="item.product.proImg || 'assets/placeholder-product.jpg'" 
