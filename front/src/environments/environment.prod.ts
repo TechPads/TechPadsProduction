@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://namespace-dont-radical-compile.trycloudflare.com/techPads/store/v1'
+  apiUrl: 'https://outlets-pursue-icons-valve.trycloudflare.com/techPads/store/v1'
 };
