@@ -553,9 +553,6 @@ export class RegisterInventoryComponent implements OnInit {
         provider: provider,
       };
 
-      console.log('📦 Datos del inventario a enviar:', inventoryData);
-
-      console.log('📦 Datos del inventario a enviar:', inventoryData);
 
       this.inventoryService.createInventoryItem(inventoryData).subscribe({
         next: (response) => {

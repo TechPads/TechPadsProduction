@@ -26,16 +26,53 @@ export class CreateProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.productForm = this.fb.group({
-      proName: ['', [Validators.required, Validators.minLength(2)]],
-      proImg: ['', [Validators.required]],
-      proPrice: ['', [Validators.required, Validators.min(1)]],
-      proMark: ['', [Validators.required, Validators.minLength(2)]],
-      descript: ['', [Validators.required, Validators.minLength(5)]],
+      proName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(30),
+          Validators.pattern(/^(?!\s*$)[A-Za-zÁÉÍÓÚáéíóúñÑ0-9 ]{2,30}$/),
+        ],
+      ],
+      proImg: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|svg)|https?:\/\/.*)$/),
+        ],
+      ],
+      proPrice: [
+        '',
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(20000000),
+          Validators.pattern(/^\d{1,8}$/),
+        ],
+      ],
+      proMark: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(20),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,20}$/),
+        ],
+      ],
+      descript: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(50),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9 ]{5,50}$/),
+        ],
+      ],
       typeCode: ['', Validators.required],
-      status: ['A', Validators.required]
+      status: ['A', Validators.required],
     });
 
-   
     this.productService.getProductTypes().subscribe({
       next: (types: ProductType[]) => {
         this.productTypes = types;
@@ -47,13 +84,11 @@ export class CreateProductComponent implements OnInit {
       },
     });
 
-   
     this.productForm.get('proImg')?.valueChanges.subscribe((url: string) => {
       this.previewImage = url;
     });
   }
 
-  
   onlyNumbers(event: KeyboardEvent) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
@@ -78,13 +113,13 @@ export class CreateProductComponent implements OnInit {
 
     const newProduct: Product = {
       proCode: Number(productData.proCode),
-      proName: productData.proName,
-      descript: productData.descript,
-      proImg: productData.proImg,
-      proMark: productData.proMark,
-      proPrice: productData.proPrice,
+      proName: productData.proName.trim(),
+      descript: productData.descript.trim(),
+      proImg: productData.proImg.trim(),
+      proMark: productData.proMark.trim(),
+      proPrice: Number(productData.proPrice),
       productType: selectedType,
-      status: productData.status
+      status: productData.status,
     };
 
     this.productService.createProduct(newProduct).subscribe({

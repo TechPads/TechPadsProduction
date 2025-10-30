@@ -43,6 +43,7 @@ export interface InventoryItem {
 export class InventoryService {
   private apiUrl = environment.apiUrl;
   
+  // ✅ Subject para filtros - siempre emitirá cambios
   private typeCodeFilterSubject = new Subject<number | null>();
   typeCodeFilter$ = this.typeCodeFilterSubject.asObservable();
 
@@ -74,24 +75,14 @@ export class InventoryService {
 
   // Filtro privado para items activos
   private filterActiveItems(items: InventoryItem[]): InventoryItem[] {
-  return items.filter(item => {
-    // Verificar que tanto el inventario como el producto estén activos
-    const isActive = item.status === 'A' && item.product.status === 'A';
-    const hasStock = item.invStock > 0;
-    
-    console.log('Filtrando item:', {
-      nombre: item.product.proName,
-      invStatus: item.status,
-      proStatus: item.product.status,
-      stock: item.invStock,
-      isActive: isActive,
-      hasStock: hasStock,
-      mostrar: isActive && hasStock
+    return items.filter(item => {
+      // Verificar que tanto el inventario como el producto estén activos
+      const isActive = item.status === 'A' && item.product.status === 'A';
+      const hasStock = item.invStock > 0;
+      
+      return isActive && hasStock;
     });
-    
-    return isActive && hasStock;
-  });
-}
+  }
 
   // Obtener item de inventario por código
   getInventoryItem(invCode: number): Observable<InventoryItem> {
@@ -141,10 +132,11 @@ export class InventoryService {
 
   // Filtrar por tipo de producto
   filterByTypeCode(typeCode: number | null): void {
+    console.log('🚀 InventoryService - Emitiendo filtro:', typeCode);
     this.typeCodeFilterSubject.next(typeCode);
   }
 
-  // Métodos helper para verificar status
+  
   isItemActive(item: InventoryItem): boolean {
     return item.status === 'A' && item.product.status === 'A';
   }
