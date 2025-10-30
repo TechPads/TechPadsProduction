@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -18,8 +17,8 @@ import java.time.LocalDate;
 public class InventoryClass {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // si tu BD permite identity
     @Column(name = "INVCODE", nullable = false)
-    @Positive(message = "El código de inventario debe ser un número positivo")
     private Long invCode;
 
     @NotNull(message = "El stock es obligatorio")
@@ -29,6 +28,7 @@ public class InventoryClass {
 
     @NotNull(message = "El precio de venta es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio de venta debe ser mayor a 0")
+    @Digits(integer = 13, fraction = 2, message = "El precio tiene un formato inválido")
     @Column(name = "SELLINGPRICE", nullable = false)
     private BigDecimal sellingPrice;
 
@@ -37,13 +37,15 @@ public class InventoryClass {
     @Column(name = "INVDATE", nullable = false)
     private LocalDate invDate;
 
-    // Relación con PRODUCT
+    @NotBlank(message = "El estado es obligatorio")
+    @Column(name = "INVSTATUS", nullable = false, length = 1, columnDefinition = "CHAR(1)")
+    private String status;
+
     @NotNull(message = "El producto es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROCODE", nullable = false)
     private Product product;
 
-    // Relación con PROVIDER
     @NotNull(message = "El proveedor es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INVPROV", nullable = false)

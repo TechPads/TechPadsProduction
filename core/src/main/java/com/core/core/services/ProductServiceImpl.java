@@ -86,15 +86,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void crearProductoProcedure(Product product) {
         productRepository.crearProducto(
-                product.getProCode(),
                 product.getProName(),
                 product.getProImg(),
                 product.getProPrice(),
                 product.getProductType().getTypeCode(),
                 product.getDescript(),
-                product.getProMark());
+                product.getProMark(),
+                product.getStatus() != null ? product.getStatus() : "A" // valor por defecto 'A'
+        );
     }
 
+    @Override
     public void modificarProductoProcedure(Long code, Product product) {
         productRepository.modificarProducto(
                 code,
@@ -103,7 +105,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getProPrice(),
                 product.getProductType().getTypeCode(),
                 product.getDescript(),
-                product.getProMark());
+                product.getProMark(),
+                product.getStatus() != null ? product.getStatus() : "A" // opcional
+        );
     }
 
     @Override

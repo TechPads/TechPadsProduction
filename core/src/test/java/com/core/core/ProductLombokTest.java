@@ -60,6 +60,7 @@ public class ProductLombokTest {
             BigDecimal.valueOf(300000),
             "Description",
             "Brand",
+            "A",
             null
         );
         
