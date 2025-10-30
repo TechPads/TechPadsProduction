@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://resumes-motorcycles-ports-biol.trycloudflare.com/techPads/store/v1'
+  apiUrl: 'https://namespace-dont-radical-compile.trycloudflare.com/techPads/store/v1'
 };
