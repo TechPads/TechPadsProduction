@@ -1,3 +1,6 @@
+/* ========================= */
+/* 🔄 ESTADO DE CARGA */
+/* ========================= */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -29,6 +32,9 @@
 
 
 
+/* ========================= */
+/* 🧾 FORMULARIO PRINCIPAL */
+/* ========================= */
 .form-container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -53,8 +59,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-bottom: 0;
-  white-space: nowrap;
   width: fit-content;
 }
 
@@ -72,6 +76,9 @@
 
 
 
+/* ========================= */
+/* 🧩 CAMPOS DE FORMULARIO */
+/* ========================= */
 .product-form {
   background: white;
   padding: 2rem;
@@ -116,6 +123,11 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+.product-form input:invalid:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
 .product-form textarea {
   resize: vertical;
   min-height: 100px;
@@ -137,9 +149,12 @@
 
 
 
+/* ========================= */
+/* ⚠️ MENSAJES DE ERROR */
+/* ========================= */
 .error-message {
   margin-bottom: 1rem;
-  padding: 0.5rem;
+  padding: 0.5rem 0.75rem;
   background-color: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 6px;
@@ -152,6 +167,9 @@
 
 
 
+/* ========================= */
+/* 🧮 BOTONES */
+/* ========================= */
 .button-group {
   display: flex;
   gap: 1rem;
@@ -197,13 +215,16 @@
 }
 
 .btn-submit:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
 }
 
 
 
+/* ========================= */
+/* 🖼️ VISTA PREVIA */
+/* ========================= */
 .preview-section {
   position: sticky;
   top: 2rem;
@@ -257,6 +278,9 @@
 
 
 
+/* ========================= */
+/* 📋 INFORMACIÓN DE PREVISUALIZACIÓN */
+/* ========================= */
 .info-preview {
   background: white;
   padding: 1.5rem;
@@ -291,6 +315,9 @@
 
 
 
+/* ========================= */
+/* 🔔 TOAST */
+/* ========================= */
 .toast {
   position: fixed;
   top: 2rem;
@@ -350,6 +377,9 @@
 
 
 
+/* ========================= */
+/* 📱 RESPONSIVE */
+/* ========================= */
 @media (max-width: 1024px) {
   .form-container {
     grid-template-columns: 1fr;
