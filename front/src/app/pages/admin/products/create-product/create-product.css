@@ -4,8 +4,10 @@
   align-items: flex-start;
   justify-content: center;
   margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
+/* === FORMULARIO === */
 .product-form {
   background: white;
   border-radius: 16px;
@@ -15,6 +17,21 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.product-form h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #111;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.product-form label {
+  font-weight: 500;
+  color: #333;
+  margin-top: 0.5rem;
 }
 
 .product-form input,
@@ -24,8 +41,28 @@
   border-radius: 8px;
   padding: 0.5rem;
   font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #fafafa;
 }
 
+/* === FOCUS VISUAL === */
+.product-form input:focus,
+.product-form textarea:focus,
+.product-form select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+  background: #fff;
+}
+
+/* === TEXTAREA === */
+.product-form textarea {
+  resize: none;
+  min-height: 70px;
+}
+
+/* === BOTÓN === */
 .product-form button {
   background: #111;
   color: white;
@@ -35,12 +72,24 @@
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
+  margin-top: 0.5rem;
 }
 
 .product-form button:hover {
   background: #222;
+  transform: scale(1.02);
 }
 
+/* === ERRORES === */
+.error-message {
+  color: #e53935;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  margin-top: -0.3rem;
+  font-weight: 500;
+}
+
+/* === PREVISUALIZACIÓN === */
 .preview {
   background: white;
   border-radius: 16px;
@@ -50,14 +99,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .preview img {
   width: 100%;
   border-radius: 12px;
   object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
+.preview img:hover {
+  transform: scale(1.05);
+}
+
+/* === TOAST === */
 .toast {
   position: fixed;
   top: 1.5rem;
@@ -71,7 +127,7 @@
   align-items: center;
   gap: 0.75rem;
   font-weight: 500;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
   z-index: 1000;
   max-width: 300px;
 }
@@ -89,6 +145,17 @@
   height: 24px;
 }
 
+/* === ANIMACIONES === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+/* === QUITAR SPIN DE INPUT NUMBER === */
 .no-spin::-webkit-inner-spin-button,
 .no-spin::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -99,13 +166,19 @@
   -moz-appearance: textfield;
 }
 
-.error-message {
-  color: red;
-  font-size: 0.85rem;
-  margin-bottom: 10px;
-}
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column;
+    align-items: center;
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  .product-form {
+    width: 90%;
+  }
+
+  .preview {
+    width: 80%;
+    margin-top: 1rem;
+  }
 }

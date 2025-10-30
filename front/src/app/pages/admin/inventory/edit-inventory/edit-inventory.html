@@ -119,14 +119,21 @@
         placeholder="Ej: 50"
         (keypress)="onlyNumbers($event)"
         min="0"
+        max="200"
       />
       <div *ngIf="submitted && inventoryForm.controls['invStock'].invalid" class="error-message">
-        <small *ngIf="inventoryForm.controls['invStock'].errors?.['required']"
-          >El stock es obligatorio.</small
-        >
-        <small *ngIf="inventoryForm.controls['invStock'].errors?.['min']"
-          >El stock no puede ser negativo.</small
-        >
+        <small *ngIf="inventoryForm.controls['invStock'].errors?.['required']">
+          El stock es obligatorio.
+        </small>
+        <small *ngIf="inventoryForm.controls['invStock'].errors?.['min']">
+          El stock no puede ser negativo.
+        </small>
+        <small *ngIf="inventoryForm.controls['invStock'].errors?.['max']">
+          El stock no puede superar 200 unidades.
+        </small>
+        <small *ngIf="inventoryForm.controls['invStock'].errors?.['pattern']">
+          Solo se permiten números.
+        </small>
       </div>
 
       <!-- Precio de Venta -->
@@ -137,17 +144,24 @@
         placeholder="Ej: 6999"
         step="0.01"
         min="0"
+        max="20000000"
       />
       <div
         *ngIf="submitted && inventoryForm.controls['sellingPrice'].invalid"
         class="error-message"
       >
-        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['required']"
-          >El precio de venta es obligatorio.</small
-        >
-        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['min']"
-          >El precio debe ser mayor que 0.</small
-        >
+        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['required']">
+          El precio de venta es obligatorio.
+        </small>
+        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['min']">
+          El precio debe ser mayor que 0.
+        </small>
+        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['max']">
+          El precio no puede superar los 20 millones.
+        </small>
+        <small *ngIf="inventoryForm.controls['sellingPrice'].errors?.['pattern']">
+          Solo se permiten números o decimales.
+        </small>
       </div>
 
       <!-- Fecha de Inventario -->
@@ -171,26 +185,46 @@
 
       <!-- Nombre del Proveedor -->
       <label>Nombre del Proveedor</label>
-      <input formControlName="provName" type="text" placeholder="Ej: Distribuidora Tech S.A." />
+      <input
+        formControlName="provName"
+        type="text"
+        placeholder="Ej: Distribuidora Tech S.A."
+        maxlength="30"
+      />
       <div *ngIf="submitted && inventoryForm.controls['provName'].invalid" class="error-message">
-        <small *ngIf="inventoryForm.controls['provName'].errors?.['required']"
-          >El nombre del proveedor es obligatorio.</small
-        >
-        <small *ngIf="inventoryForm.controls['provName'].errors?.['minlength']"
-          >El nombre debe tener al menos 2 caracteres.</small
-        >
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['required']">
+          El nombre del proveedor es obligatorio.
+        </small>
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['minlength']">
+          Debe tener al menos 2 caracteres.
+        </small>
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['maxlength']">
+          No puede tener más de 30 caracteres.
+        </small>
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['pattern']">
+          Solo se permiten letras y espacios.
+        </small>
+        <small *ngIf="inventoryForm.controls['provName'].errors?.['forbiddenWord']">
+          Contiene palabras o símbolos no permitidos.
+        </small>
       </div>
 
       <!-- Email del Proveedor -->
       <label>Email del Proveedor</label>
       <input formControlName="provEmail" type="email" placeholder="Ej: contacto@proveedor.com" />
       <div *ngIf="submitted && inventoryForm.controls['provEmail'].invalid" class="error-message">
-        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['required']"
-          >El email es obligatorio.</small
-        >
-        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['email']"
-          >Ingresa un email válido.</small
-        >
+        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['required']">
+          El email es obligatorio.
+        </small>
+        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['email']">
+          Ingresa un email válido.
+        </small>
+        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['pattern']">
+          El correo debe terminar en .com, .co, .org, etc.
+        </small>
+        <small *ngIf="inventoryForm.controls['provEmail'].errors?.['forbiddenWord']">
+          Contiene palabras o símbolos no permitidos.
+        </small>
       </div>
 
       <!-- Teléfono del Proveedor -->
@@ -200,18 +234,18 @@
         type="tel"
         placeholder="Ej: 3001234567"
         (keypress)="onlyNumbers($event)"
+        maxlength="10"
       />
       <div *ngIf="submitted && inventoryForm.controls['provPhone'].invalid" class="error-message">
-        <small *ngIf="inventoryForm.controls['provPhone'].errors?.['required']"
-          >El teléfono es obligatorio.</small
-        >
-        <small *ngIf="inventoryForm.controls['provPhone'].errors?.['pattern']"
-          >El teléfono debe tener entre 7 y 15 dígitos.</small
-        >
+        <small *ngIf="inventoryForm.controls['provPhone'].errors?.['required']">
+          El teléfono es obligatorio.
+        </small>
+        <small *ngIf="inventoryForm.controls['provPhone'].errors?.['pattern']">
+          El teléfono debe empezar con 3 y tener 10 dígitos.
+        </small>
       </div>
     </div>
-
-    <!-- Action Buttons -->
+    <!-- Botones -->
     <div class="button-group">
       <button type="button" class="btn-cancel" (click)="goBack()">Cancelar</button>
       <button type="submit" class="btn-submit" [disabled]="inventoryForm.invalid && submitted">
@@ -230,11 +264,11 @@
     </div>
   </form>
 
-  <!-- Preview Section -->
+  <!-- Vista previa -->
   <div class="preview-section">
     <h3>Vista previa del producto</h3>
 
-    <!-- Product Image -->
+    <!-- Imagen -->
     <div class="preview" *ngIf="inventoryItem.product.proImg; else noPreview">
       <img [src]="inventoryItem.product.proImg" [alt]="inventoryItem.product.proName" />
     </div>
@@ -256,7 +290,7 @@
       </div>
     </ng-template>
 
-    <!-- Inventory Info Preview -->
+    <!-- Info -->
     <div class="info-preview">
       <div class="preview-item">
         <span class="preview-label">Producto:</span>
