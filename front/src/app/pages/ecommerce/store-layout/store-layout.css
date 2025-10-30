@@ -52,7 +52,7 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
-  transition: background 0.3s;
+  transition: all 0.3s;
   position: relative;
   color: #374151;
 }
@@ -65,7 +65,30 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.admin-avatar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.admin-avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+}
+
+.login-avatar {
+  background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+  color: white;
 }
 
 .cart-badge {
@@ -94,11 +117,14 @@
   padding: 20px 0;
   transition: transform 0.3s;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-header {
   padding: 0 20px 20px;
   border-bottom: 1px solid #e5e5e5;
+  flex-shrink: 0;
 }
 
 .sidebar-header h2 {
@@ -109,6 +135,17 @@
 
 .sidebar-nav {
   padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Contenedor principal del contenido navegable */
+.nav-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .nav-item {
@@ -122,6 +159,11 @@
   cursor: pointer;
   font-size: 0.95rem;
   border-left: 3px solid transparent;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  flex-shrink: 0;
 }
 
 .nav-item:hover {
@@ -134,6 +176,19 @@
   color: #1e40af;
   font-weight: 600;
   border-left: 3px solid #3b82f6;
+}
+
+/* ✅ Estilo especial para el enlace de Vista Administrador */
+.admin-nav-item {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-left: 3px solid #667eea;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.admin-nav-item:hover {
+  background: linear-gradient(135deg, #667eea25 0%, #764ba225 100%);
+  color: #5a67d8;
 }
 
 .nav-item.expandable {
@@ -182,6 +237,10 @@
   cursor: pointer;
   border-left: 3px solid transparent;
   position: relative;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
 }
 
 .submenu-item::before {
@@ -220,6 +279,37 @@
   transform: translateY(-50%) scale(1.2);
 }
 
+/* ✅ Sección de Cerrar Sesión - FIJADA EN LA PARTE INFERIOR */
+.logout-section {
+  margin-top: auto;
+  padding-top: 20px;
+  flex-shrink: 0;
+  background-color: #f9f9f9;
+  border-top: 1px solid #e5e7eb;
+}
+
+.nav-divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 0 20px 20px;
+}
+
+.logout-item {
+  color: #ef4444 !important;
+  border-left: 3px solid #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+  margin: 0;
+}
+
+.logout-item:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+}
+
+.logout-item svg {
+  color: #ef4444;
+}
+
 .content-area {
   flex: 1;
   padding: 2rem;
@@ -227,9 +317,37 @@
   max-width: 100%;
 }
 
-
 .nav-item.expandable.active,
 .nav-item.expandable:has(+ .submenu.open) {
   background-color: #f9fafb;
   color: #1f2937;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    height: 100vh;
+    z-index: 99;
+    background-color: white;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .content-area {
+    padding: 1rem;
+  }
+  
+  .logout-section {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+  }
 }
