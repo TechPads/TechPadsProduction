@@ -2,6 +2,7 @@ package com.core.core.services;
 
 import com.core.core.modules.ProductType;
 import com.core.core.repository.ProductTypeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 @Service
 @Lazy
+@Transactional
 public class ProductTypeServiceImpl implements ProductTypeService {
 
     private final ProductTypeRepository productTypeRepository;

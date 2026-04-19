@@ -2,11 +2,13 @@ package com.core.core.services;
 
 import com.core.core.modules.Department;
 import com.core.core.repository.DepartmentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class DepartmentServiceImpl implements DepartmentService{
 
     private final DepartmentRepository departmentRepository;

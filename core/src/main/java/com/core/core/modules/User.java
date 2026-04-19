@@ -54,7 +54,7 @@ public class User {
         if (status == null) status = "A";
     }
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, optional = true) 
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, optional = true)
     private ClientDetail clientDetail;
 
 }

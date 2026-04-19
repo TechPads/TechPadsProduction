@@ -18,8 +18,9 @@ import java.math.BigDecimal;
 public class OrderDetail {
     
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ord_id", nullable = false)
+    @JsonIgnoreProperties({"orderDetails", "bill"})
     private Order order;
     
     @Id

@@ -22,13 +22,14 @@ public class Bill {
     private Long billCode;
     
     @NotNull(message = "El inventario es obligatorio")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "inv_code", nullable = false)
     private InventoryClass inventory;
     
     @NotNull(message = "La orden es obligatoria")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ord_id", nullable = false, unique = true)
+    @JsonIgnoreProperties("bill")
     private Order order;
     
     @NotBlank(message = "El tipo de pago es obligatorio")

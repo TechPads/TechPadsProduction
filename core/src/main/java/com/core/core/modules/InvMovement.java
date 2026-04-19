@@ -21,7 +21,7 @@ public class InvMovement {
     private Long invMovID;
     
     @NotNull(message = "El inventario es obligatorio")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "inv_code", nullable = false)
     private InventoryClass inventory;
     
@@ -50,11 +50,11 @@ public class InvMovement {
     @Column(name = "reason", length = 200)
     private String reason;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ord_id")
     private Order order;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     

@@ -3,6 +3,7 @@ package com.core.core.services;
 import com.core.core.modules.Product;
 import com.core.core.modules.Provider;
 import com.core.core.repository.ProviderRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Service
 @Lazy
+@Transactional
 public class ProviderServiceImpl implements ProviderService {
 
     private final ProviderRepository providerRepository;

@@ -48,7 +48,7 @@ public class Product {
     private String status = "A";
 
     @NotNull(message = "El tipo de producto es obligatorio")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pro_type", nullable = false)
     private ProductType productType;
 }

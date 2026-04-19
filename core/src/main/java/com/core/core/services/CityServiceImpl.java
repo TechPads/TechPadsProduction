@@ -2,11 +2,13 @@ package com.core.core.services;
 
 import com.core.core.modules.City;
 import com.core.core.repository.CityRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CityServiceImpl implements CityService {
 
     private final CityRepository cityRepository;

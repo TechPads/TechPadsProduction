@@ -2,11 +2,13 @@ package com.core.core.services;
 
 import com.core.core.modules.ClientDetail;
 import com.core.core.repository.ClientDetailRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ClientDetailServiceImpl implements ClientDetailService{
 
     private final ClientDetailRepository clientDetailRepository;

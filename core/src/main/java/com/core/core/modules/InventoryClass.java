@@ -41,12 +41,12 @@ public class InventoryClass {
     private String status = "A";
 
     @NotNull(message = "El producto es obligatorio")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pro_code", nullable = false)
     private Product product;
 
     @NotNull(message = "El proveedor es obligatorio")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "inv_prov", nullable = false)
     private Provider provider;
 }
