@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "DEPARTMENTS")
+@Table(name = "departments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +15,9 @@ public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DEPID")
+    @Column(name = "dep_id")
     private Long depID;
 
-    @Column(name = "DEPNAME", nullable = false, unique = true, length = 100)
+    @Column(name = "dep_name", nullable = false, unique = true, length = 100)
     private String depName;
 }

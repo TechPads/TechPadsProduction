@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "INVMOVEMENT")
+@Table(name = "inv_movement")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,45 +17,45 @@ public class InvMovement {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "INVMOVID", nullable = false)
+    @Column(name = "inv_mov_id", nullable = false)
     private Long invMovID;
     
     @NotNull(message = "El inventario es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "INVCODE", nullable = false)
+    @JoinColumn(name = "inv_code", nullable = false)
     private InventoryClass inventory;
     
     @NotBlank(message = "El tipo de movimiento es obligatorio")
     @Pattern(regexp = "ENTRADA|SALIDA|DEVOLUCION|AJUSTE",
              message = "El tipo debe ser ENTRADA, SALIDA, DEVOLUCION o AJUSTE")
-    @Column(name = "MOVTYPE", length = 20, nullable = false)
+    @Column(name = "mov_type", length = 20, nullable = false)
     private String movType;
     
     @NotNull(message = "La fecha del movimiento es obligatoria")
     @Temporal(TemporalType.DATE)
-    @Column(name = "MOVDATE", nullable = false)
+    @Column(name = "mov_date", nullable = false)
     private Date movDate;
     
     @NotNull(message = "La cantidad es obligatoria")
     @Min(value = 1, message = "La cantidad debe ser mayor a 0")
-    @Column(name = "QUANTITY", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
     
-    @Column(name = "PREVSTOCK")
+    @Column(name = "prev_stock")
     private Integer prevStock;
     
-    @Column(name = "NEWSTOCK")
+    @Column(name = "new_stock")
     private Integer newStock;
     
-    @Column(name = "REASON", length = 200)
+    @Column(name = "reason", length = 200)
     private String reason;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDID")
+    @JoinColumn(name = "ord_id")
     private Order order;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USERID")
+    @JoinColumn(name = "user_id")
     private User user;
     
     @PrePersist

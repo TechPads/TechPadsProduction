@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "PRODUCTTYPE")
+@Table(name = "product_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +15,9 @@ public class ProductType {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TYPECODE")
+    @Column(name = "type_code")
     private Long typeCode;
     
-    @Column(name = "TYPENAME", nullable = false, length = 100)
+    @Column(name = "type_name", nullable = false, length = 100)
     private String typeName;
 }

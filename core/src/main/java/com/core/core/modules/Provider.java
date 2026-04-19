@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "PROVIDER")
+@Table(name = "provider")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,15 +15,15 @@ public class Provider {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PROVID", nullable = false)
+    @Column(name = "prov_id", nullable = false)
     private Long provId;
     
-    @Column(name = "PROVEMAIL", nullable = false, length = 80, unique = true)
+    @Column(name = "prov_email", nullable = false, length = 80, unique = true)
     private String provEmail;
     
-    @Column(name = "PROVNAME", nullable = false, length = 80)
+    @Column(name = "prov_name", nullable = false, length = 80)
     private String provName;
     
-    @Column(name = "PROVPHONE", nullable = false, length = 10)
+    @Column(name = "prov_phone", nullable = false, length = 10)
     private String provPhone;
 }

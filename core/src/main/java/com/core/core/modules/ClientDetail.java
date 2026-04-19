@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name = "CLIENT_DETAIL")
+@Table(name = "client_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,43 +17,43 @@ import lombok.*;
 public class ClientDetail {
 
     @Id
-    @Column(name = "USERID")
+    @Column(name = "user_id")
     private Long id;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "USERID")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
     @NotBlank(message = "El primer nombre es obligatorio")
-    @Column(name = "FIRSTNAME", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "SECONDNAME")
+    @Column(name = "second_name")
     private String secondName;
 
     @NotBlank(message = "El primer apellido es obligatorio")
-    @Column(name = "FIRSTLASTNAME", nullable = false)
+    @Column(name = "first_last_name", nullable = false)
     private String firstLastName;
 
-    @Column(name = "SECONDLASTNAME")
+    @Column(name = "second_last_name")
     private String secondLastName;
 
     @NotBlank(message = "La dirección es obligatoria")
-    @Column(name = "ADDRESS", nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "DESCADDRESS")
+    @Column(name = "desc_address")
     private String descAddress;
 
     @NotNull(message = "La ciudad es obligatoria")
     @ManyToOne
-    @JoinColumn(name = "CITYID", nullable = false)
+    @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
     @NotNull(message = "El departamento es obligatorio")
     @ManyToOne
-    @JoinColumn(name = "DEPID", nullable = false)
+    @JoinColumn(name = "dep_id", nullable = false)
     private Department department;
 }

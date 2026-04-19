@@ -18,21 +18,21 @@ public class Order {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ORDID", nullable = false)
+    @Column(name = "ord_id", nullable = false)
     private Long ordID;
     
     @NotBlank(message = "El estado de la orden es obligatorio")
-    @Column(name = "ORDSTATE", length = 30, nullable = false)
+    @Column(name = "ord_state", length = 30, nullable = false)
     private String ordState; // Pending, Processing, Shipped, Delivered, Cancelled
     
     @NotNull(message = "La fecha de la orden es obligatoria")
     @Temporal(TemporalType.DATE)
-    @Column(name = "ORDDATE", nullable = false)
+    @Column(name = "ord_date", nullable = false)
     private Date ordDate;
     
     @NotNull(message = "El usuario es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USERID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

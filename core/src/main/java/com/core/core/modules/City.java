@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "CITIES")
+@Table(name = "cities")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,14 +15,14 @@ public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CITYID")
+    @Column(name = "city_id")
     private Long cityID;
 
-    @Column(name = "CITYNAME", nullable = false, length = 100)
+    @Column(name = "city_name", nullable = false, length = 100)
     private String cityName;
 
     @ManyToOne
-    @JoinColumn(name = "DEPID", nullable = false)
+    @JoinColumn(name = "dep_id", nullable = false)
     private Department department;
 
 }

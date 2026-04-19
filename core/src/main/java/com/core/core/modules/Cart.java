@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "CART")
+@Table(name = "cart")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,25 +17,25 @@ public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CARTID", nullable = false)
+    @Column(name = "cart_id", nullable = false)
     private Long cartID;
 
     @NotNull(message = "El usuario es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USERID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @NotNull(message = "El producto es obligatorio")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "PROCODE", nullable = false)
+    @JoinColumn(name = "pro_code", nullable = false)
     private Product proCode;
 
     @NotNull(message = "La cantidad es obligatoria")
     @Min(value = 1, message = "La cantidad debe ser mayor a 0")
-    @Column(name = "QUANTITY", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ADDEDDATE", nullable = false)
+    @Column(name = "added_date", nullable = false)
     private Date addedDate = new Date();
 }
