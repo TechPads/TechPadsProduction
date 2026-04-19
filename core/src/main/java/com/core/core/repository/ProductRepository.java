@@ -1,9 +1,10 @@
 package com.core.core.repository;
 
 import com.core.core.modules.Product;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,37 +14,47 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // Crear producto (ya no enviamos proCode)
-    @Procedure(procedureName = "GESTION_PRODUCTO.CREAR_PRODUCTO")
+    // =========================
+    // FUNCIONES POSTGRESQL
+    // =========================
+
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT crear_producto(:proName, :proImg, :proPrice, :proType, :descript, :proMark, :status)", nativeQuery = true)
     void crearProducto(
-            @Param("v_proName") String proName,
-            @Param("v_proImg") String proImg,
-            @Param("v_proPrice") BigDecimal proPrice,
-            @Param("v_proType") Long proType,
-            @Param("v_descript") String descript,
-            @Param("v_proMark") String proMark,
-            @Param("v_status") String status
+            @Param("proName") String proName,
+            @Param("proImg") String proImg,
+            @Param("proPrice") BigDecimal proPrice,
+            @Param("proType") String proType,   // ⚠️ CAMBIÓ A TEXT
+            @Param("descript") String descript,
+            @Param("proMark") String proMark,
+            @Param("status") String status
     );
 
-    // Modificar producto (sí requiere proCode)
-    @Procedure(procedureName = "GESTION_PRODUCTO.MODIFICAR_PRODUCTO")
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT modificar_producto(:proCode, :proName, :proImg, :proPrice, :proType, :descript, :proMark, :status)", nativeQuery = true)
     void modificarProducto(
-            @Param("v_proCode") Long proCode,
-            @Param("v_proName") String proName,
-            @Param("v_proImg") String proImg,
-            @Param("v_proPrice") BigDecimal proPrice,
-            @Param("v_proType") Long proType,
-            @Param("v_descript") String descript,
-            @Param("v_proMark") String proMark,
-            @Param("v_status") String status
+            @Param("proCode") Long proCode,
+            @Param("proName") String proName,
+            @Param("proImg") String proImg,
+            @Param("proPrice") BigDecimal proPrice,
+            @Param("proType") String proType,   // ⚠️ CAMBIÓ A TEXT
+            @Param("descript") String descript,
+            @Param("proMark") String proMark,
+            @Param("status") String status
     );
 
-    // Eliminar producto (borrado lógico)
-    @Procedure(procedureName = "GESTION_PRODUCTO.ELIMINAR_PRODUCTO")
-    void eliminarProducto(@Param("v_proCode") Long proCode);
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT eliminar_producto(:proCode)", nativeQuery = true)
+    void eliminarProducto(@Param("proCode") Long proCode);
 
+
+    // =========================
+    // CONSULTAS NORMALES
+    // =========================
 
     @Query("SELECT p FROM Product p WHERE LOWER(p.proName) LIKE LOWER(CONCAT(:text, '%'))")
     List<Product> searchByName(@Param("text") String text);
-
 }

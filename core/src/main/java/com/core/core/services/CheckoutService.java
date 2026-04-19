@@ -3,10 +3,7 @@ package com.core.core.services;
 import com.core.core.dto.*;
 import com.core.core.modules.*;
 import com.core.core.repository.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.ParameterMode;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,47 +55,46 @@ public class CheckoutService {
      */
     private CheckoutResponse procesarCompraConReintentos(CheckoutRequest request, int intentoActual) {
         try {
-            log.info("Procesando compra para usuario: {} (intento {}/{})", 
+            log.info("Procesando compra para usuario: {} (intento {}/{})",
                     request.getUserID(), intentoActual + 1, MAX_RETRIES);
 
-            // Verificar que el usuario existe
+            // Verificar usuario
             User user = userRepository.findById(request.getUserID())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Limpiar la sesión antes de ejecutar el procedimiento
+            // IMPORTANTE: limpiar contexto JPA
             entityManager.flush();
             entityManager.clear();
 
-            // Llamar al procedimiento almacenado
-            StoredProcedureQuery query = entityManager
-                    .createStoredProcedureQuery("GESTION_COMPRAS.procesar_compra");
+            // ==============================
+            // LLAMADA A POSTGRES FUNCTION
+            // ==============================
+            Query query = entityManager.createNativeQuery(
+                    "SELECT procesar_compra(:userId, :paymentType)"
+            );
 
-            // Registrar parámetros
-            query.registerStoredProcedureParameter("p_userID", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("p_paymentType", String.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("p_ordID", Long.class, ParameterMode.OUT);
+            query.setParameter("userId", request.getUserID());
+            query.setParameter("paymentType", request.getPaymentType());
 
-            // Establecer valores
-            query.setParameter("p_userID", request.getUserID());
-            query.setParameter("p_paymentType", request.getPaymentType());
-
-            // Ejecutar
-            query.execute();
-
-            // Obtener el ID de la orden creada
-            Long ordID = ((Number) query.getOutputParameterValue("p_ordID")).longValue();
+            Long ordID = ((Number) query.getSingleResult()).longValue();
 
             log.info("Orden creada exitosamente con ID: {}", ordID);
 
-            // Obtener detalles de la orden
+            // ==============================
+            // CONSULTAR ORDEN
+            // ==============================
             Order order = orderRepository.findById(ordID)
-                    .orElseThrow(() -> new RuntimeException("Orden no encontrada después de crearla"));
+                    .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
 
-            // Obtener la factura
+            // ==============================
+            // CONSULTAR FACTURA
+            // ==============================
             Bill bill = billRepository.findByOrderId(ordID)
                     .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
 
-            // Construir respuesta
+            // ==============================
+            // RESPONSE
+            // ==============================
             return CheckoutResponse.builder()
                     .ordID(ordID)
                     .ordState(order.getOrdState())
@@ -110,38 +106,35 @@ public class CheckoutService {
                     .build();
 
         } catch (Exception e) {
+
             String errorMsg = e.getMessage();
-            
-            // Verificar si es error de serialización de transacción (ORA-08177)
-            boolean esErrorSerializacion = errorMsg != null && 
-                    (errorMsg.contains("ORA-08177") || errorMsg.contains("no se puede serializar"));
-            
-            if (esErrorSerializacion && intentoActual < MAX_RETRIES) {
-                long backoffMs = (long) (INITIAL_BACKOFF_MILLIS * Math.pow(BACKOFF_MULTIPLIER, intentoActual));
-                log.warn("Error de serialización detectado. Reintentando en {}ms... (intento {}/{})", 
+
+            boolean retry = errorMsg != null &&
+                    (errorMsg.contains("serialization") ||
+                            errorMsg.contains("deadlock"));
+
+            if (retry && intentoActual < MAX_RETRIES) {
+
+                long backoffMs = (long) (INITIAL_BACKOFF_MILLIS *
+                        Math.pow(BACKOFF_MULTIPLIER, intentoActual));
+
+                log.warn("Error concurrente. Reintentando en {}ms... ({}/{})",
                         backoffMs, intentoActual + 1, MAX_RETRIES);
-                
+
                 try {
                     Thread.sleep(backoffMs);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
-                    log.error("Interrupción durante espera de reintento", ie);
                 }
-                
-                // Limpiar sesión antes del reintento
+
                 entityManager.clear();
-                
-                // Reintento recursivo
+
                 return procesarCompraConReintentos(request, intentoActual + 1);
             }
-            
-            log.error("Error al procesar la compra (intento {}/{}): {}", 
+
+            log.error("Error en compra (intento {}/{}): {}",
                     intentoActual + 1, MAX_RETRIES, e.getMessage(), e);
-            
-            // Mensaje de error más descriptivo
-            if (esErrorSerializacion) {
-                throw new RuntimeException("Error de transacción concurrente. Por favor, intenta nuevamente en unos momentos.");
-            }
+
             throw new RuntimeException("Error al procesar la compra: " + e.getMessage());
         }
     }
@@ -393,59 +386,65 @@ public class CheckoutService {
 
     private void cancelarOrdenConReintentos(Long ordID, String reason, int intentoActual) {
         try {
-            log.info("Cancelando orden: {} - Razón: {} (intento {}/{})", 
+            log.info("Cancelando orden: {} - razón: {} (intento {}/{})",
                     ordID, reason, intentoActual + 1, MAX_RETRIES);
 
-            // Limpiar sesión antes de ejecutar
-            entityManager.clear();
-
-            // Verificar que la orden existe
+            // =========================
+            // VALIDACIÓN LOCAL
+            // =========================
             Order order = orderRepository.findById(ordID)
                     .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
 
-            // Verificar que la orden puede ser cancelada
-            if ("Delivered".equals(order.getOrdState()) || "Cancelled".equals(order.getOrdState())) {
+            if ("Delivered".equals(order.getOrdState()) ||
+                    "Cancelled".equals(order.getOrdState())) {
                 throw new RuntimeException("No se puede cancelar una orden entregada o ya cancelada");
             }
 
-            // Llamar al procedimiento almacenado
-            StoredProcedureQuery query = entityManager
-                    .createStoredProcedureQuery("GESTION_COMPRAS.cancelar_orden");
+            entityManager.clear();
 
-            query.registerStoredProcedureParameter("p_ordID", Long.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("p_reason", String.class, ParameterMode.IN);
+            // =========================
+            // LLAMADA POSTGRES FUNCTION
+            // =========================
+            Query query = entityManager.createNativeQuery(
+                    "SELECT cancelar_orden(:ordId, :reason)"
+            );
 
-            query.setParameter("p_ordID", ordID);
-            query.setParameter("p_reason", reason);
+            query.setParameter("ordId", ordID);
+            query.setParameter("reason", reason);
 
-            query.execute();
+            query.getSingleResult();
 
             log.info("Orden {} cancelada exitosamente", ordID);
 
         } catch (Exception e) {
-            String errorMsg = e.getMessage();
-            boolean esErrorSerializacion = errorMsg != null && 
-                    (errorMsg.contains("ORA-08177") || errorMsg.contains("no se puede serializar"));
-            
-            if (esErrorSerializacion && intentoActual < MAX_RETRIES) {
-                long backoffMs = (long) (INITIAL_BACKOFF_MILLIS * Math.pow(BACKOFF_MULTIPLIER, intentoActual));
-                log.warn("Error de serialización en cancelación. Reintentando en {}ms... (intento {}/{})", 
+
+            String msg = e.getMessage();
+
+            boolean retry = msg != null &&
+                    (msg.contains("serialization") ||
+                            msg.contains("deadlock"));
+
+            if (retry && intentoActual < MAX_RETRIES) {
+
+                long backoffMs = (long) (INITIAL_BACKOFF_MILLIS *
+                        Math.pow(BACKOFF_MULTIPLIER, intentoActual));
+
+                log.warn("Reintento cancelación en {}ms ({}/{})",
                         backoffMs, intentoActual + 1, MAX_RETRIES);
-                
+
                 try {
                     Thread.sleep(backoffMs);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
-                    log.error("Interrupción durante espera de reintento", ie);
                 }
-                
+
                 entityManager.clear();
+
                 cancelarOrdenConReintentos(ordID, reason, intentoActual + 1);
-            } else {
-                log.error("Error al cancelar orden (intento {}/{}): {}", 
-                        intentoActual + 1, MAX_RETRIES, e.getMessage(), e);
-                throw new RuntimeException("Error al cancelar orden: " + e.getMessage());
+                return;
             }
+
+            throw new RuntimeException("Error cancelando orden: " + e.getMessage());
         }
     }
 

@@ -6,10 +6,7 @@ import com.core.core.modules.User;
 import com.core.core.repository.CartRepository;
 import com.core.core.repository.ProductRepository;
 import com.core.core.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.ParameterMode;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -143,36 +140,43 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public BigDecimal calcularTotalCarritoProcedure(Long userId) {
-        StoredProcedureQuery query = entityManager
-                .createStoredProcedureQuery("GESTION_CARRITO.calcular_total_carrito")
-                .registerStoredProcedureParameter("p_userID", Long.class, ParameterMode.IN)
-                .registerStoredProcedureParameter("p_total", BigDecimal.class, ParameterMode.OUT)
-                .setParameter("p_userID", userId);
 
-        query.execute();
-        
-        BigDecimal total = (BigDecimal) query.getOutputParameterValue("p_total");
-        return total != null ? total : BigDecimal.ZERO;
+        Query query = entityManager.createNativeQuery(
+                "SELECT calcular_total_carrito(:userId)"
+        );
+
+        query.setParameter("userId", userId);
+
+        Object result = query.getSingleResult();
+
+        if (result == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return new BigDecimal(result.toString());
     }
 
     @Override
     public boolean verificarDisponibilidadCarritoProcedure(Long userId) {
         try {
-            StoredProcedureQuery query = entityManager
-                    .createStoredProcedureQuery("GESTION_CARRITO.verificar_disponibilidad_carrito")
-                    .registerStoredProcedureParameter("p_userID", Long.class, ParameterMode.IN)
-                    .registerStoredProcedureParameter("p_disponible", Boolean.class, ParameterMode.OUT)
-                    .setParameter("p_userID", userId);
 
-            query.execute();
-            
-            Boolean disponible = (Boolean) query.getOutputParameterValue("p_disponible");
-            return Boolean.TRUE.equals(disponible);
+            Query query = entityManager.createNativeQuery(
+                    "SELECT verificar_disponibilidad_carrito(:userId)"
+            );
+
+            query.setParameter("userId", userId);
+
+            Object result = query.getSingleResult();
+
+            return Boolean.TRUE.equals(result);
+
         } catch (Exception e) {
-            throw new RuntimeException("Error verificando disponibilidad del carrito: " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Error verificando disponibilidad del carrito: " + e.getMessage(),
+                    e
+            );
         }
     }
-
     
     @Override
     public Map<String, Object> verificarDisponibilidadCarritoCompleto(Long userId) {

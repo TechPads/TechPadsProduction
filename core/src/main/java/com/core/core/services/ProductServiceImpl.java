@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
                 product.getProName(),
                 product.getProImg(),
                 product.getProPrice(),
-                product.getProductType().getTypeCode(),
+                String.valueOf(product.getProductType().getTypeCode()),
                 product.getDescript(),
                 product.getProMark(),
                 product.getStatus() != null ? product.getStatus() : "A" // valor por defecto 'A'
@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
                 product.getProName(),
                 product.getProImg(),
                 product.getProPrice(),
-                product.getProductType().getTypeCode(),
+                String.valueOf(product.getProductType().getTypeCode()),
                 product.getDescript(),
                 product.getProMark(),
                 product.getStatus() != null ? product.getStatus() : "A" // opcional
@@ -111,10 +111,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product consultarProductoFunction(Long code) {
+
         StoredProcedureQuery query = entityManager
-                .createStoredProcedureQuery("GESTION_PRODUCTO.CONSULTAR_PRODUCTO", Product.class)
-                .registerStoredProcedureParameter("v_proCode", Long.class, ParameterMode.IN)
-                .setParameter("v_proCode", code);
+                .createStoredProcedureQuery("consultar_producto", Product.class);
+
+        query.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
+        query.setParameter(1, code);
 
         return (Product) query.getSingleResult();
     }

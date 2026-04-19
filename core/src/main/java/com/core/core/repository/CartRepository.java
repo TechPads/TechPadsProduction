@@ -15,7 +15,6 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-        
         List<Cart> findByUser_Id(Long userId);
 
         Optional<Cart> findByUser_IdAndProCode_ProCode(Long userId, Long proCode);
@@ -25,27 +24,41 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
         @Query("DELETE FROM Cart c WHERE c.user.id = :userId")
         void deleteByUser_Id(@Param("userId") Long userId);
 
-        // Procedimientos PL/SQL
-        @Procedure(procedureName = "GESTION_CARRITO.agregar_al_carrito")
-        void agregarAlCarrito(
-                        @Param("p_userID") Long userID,
-                        @Param("p_proCode") Long proCode,
-                        @Param("p_quantity") Integer quantity);
+        // =========================
+        // FUNCIONES POSTGRESQL
+        // =========================
 
-        @Procedure(procedureName = "GESTION_CARRITO.actualizar_cantidad")
-        void actualizarCantidad(
-                        @Param("p_cartID") Long cartID,
-                        @Param("p_quantity") Integer quantity);
+        @Modifying
+        @Transactional
+        @Query(value = "SELECT agregar_al_carrito(:userID, :proCode, :quantity)", nativeQuery = true)
+        void agregarAlCarrito(@Param("userID") Long userID,
+                              @Param("proCode") Long proCode,
+                              @Param("quantity") Integer quantity);
 
-        @Procedure(procedureName = "GESTION_CARRITO.eliminar_del_carrito")
-        void eliminarDelCarrito(@Param("p_cartID") Long cartID);
+        @Modifying
+        @Transactional
+        @Query(value = "SELECT actualizar_cantidad(:cartID, :quantity)", nativeQuery = true)
+        void actualizarCantidad(@Param("cartID") Long cartID,
+                                @Param("quantity") Integer quantity);
 
-        @Procedure(procedureName = "GESTION_CARRITO.limpiar_carrito")
-        void limpiarCarrito(@Param("p_userID") Long userID);
+        @Modifying
+        @Transactional
+        @Query(value = "SELECT eliminar_del_carrito(:cartID)", nativeQuery = true)
+        void eliminarDelCarrito(@Param("cartID") Long cartID);
 
-        @Procedure(procedureName = "GESTION_CARRITO.calcular_total_carrito")
-        Integer calcularTotalCarrito(@Param("p_userID") Long userID);
+        @Modifying
+        @Transactional
+        @Query(value = "SELECT limpiar_carrito(:userID)", nativeQuery = true)
+        void limpiarCarrito(@Param("userID") Long userID);
 
-        @Procedure(procedureName = "GESTION_CARRITO.verificar_disponibilidad_carrito")
-        Integer verificarDisponibilidadCarrito(@Param("p_userID") Long userID);
+        @Query(value = "SELECT calcular_total_carrito(:userID)", nativeQuery = true)
+        Double calcularTotalCarrito(@Param("userID") Long userID);
+
+        @Query(value = "SELECT verificar_disponibilidad_carrito(:userID)", nativeQuery = true)
+        Boolean verificarDisponibilidadCarrito(@Param("userID") Long userID);
+
+        @Query(value = "SELECT procesar_compra(:userId, :paymentType)", nativeQuery = true)
+        Long procesarCompra(@Param("userId") Long userId,
+                            @Param("paymentType") String paymentType);
+
 }
