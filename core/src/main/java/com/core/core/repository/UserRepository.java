@@ -20,7 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // POSTGRESQL FUNCTIONS
     // =========================
 
-    @Modifying
     @Transactional
     @Query(value = """
         SELECT registrar_usuario(
@@ -38,7 +37,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             :depId
         )
     """, nativeQuery = true)
-    void registrarUsuario(
+    Object registrarUsuario(
             @Param("userName") String userName,
             @Param("password") String password,
             @Param("email") String email,
@@ -53,7 +52,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("depId") Long depId
     );
 
-    @Modifying
     @Transactional
     @Query(value = """
         SELECT modificar_usuario(
@@ -71,7 +69,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             :depId
         )
     """, nativeQuery = true)
-    void modificarUsuario(
+    Object  modificarUsuario(
             @Param("userId") Long userId,
             @Param("phone") String phone,
             @Param("email") String email,

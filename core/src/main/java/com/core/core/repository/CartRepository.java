@@ -27,28 +27,24 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
         // FUNCIONES POSTGRESQL
         // =========================
 
-        @Modifying
         @Transactional
-        @Query(value = "CALL agregar_al_carrito(:userID, :proCode, :quantity)", nativeQuery = true)
-        void agregarAlCarrito(@Param("userID") Long userID,
-                              @Param("proCode") Long proCode,
-                              @Param("quantity") Integer quantity);
-
-        @Modifying
-        @Transactional
-        @Query(value = "CALL actualizar_cantidad(:cartID, :quantity)", nativeQuery = true)
-        void actualizarCantidad(@Param("cartID") Long cartID,
+        @Query(value = "SELECT agregar_al_carrito(:userID, :proCode, :quantity)", nativeQuery = true)
+        Object agregarAlCarrito(@Param("userID") Long userID,
+                                @Param("proCode") Long proCode,
                                 @Param("quantity") Integer quantity);
 
-        @Modifying
         @Transactional
-        @Query(value = "CALL eliminar_del_carrito(:cartID)", nativeQuery = true)
-        void eliminarDelCarrito(@Param("cartID") Long cartID);
+        @Query(value = "SELECT actualizar_cantidad(:cartID, :quantity)", nativeQuery = true)
+        Object actualizarCantidad(@Param("cartID") Long cartID,
+                                  @Param("quantity") Integer quantity);
 
-        @Modifying
         @Transactional
-        @Query(value = "CALL limpiar_carrito(:userID)", nativeQuery = true)
-        void limpiarCarrito(@Param("userID") Long userID);
+        @Query(value = "SELECT eliminar_del_carrito(:cartID)", nativeQuery = true)
+        Object eliminarDelCarrito(@Param("cartID") Long cartID);
+
+        @Transactional
+        @Query(value = "SELECT limpiar_carrito(:userID)", nativeQuery = true)
+        Object limpiarCarrito(@Param("userID") Long userID);
 
         @Query(value = "SELECT calcular_total_carrito(:userID)", nativeQuery = true)
         Double calcularTotalCarrito(@Param("userID") Long userID);
@@ -59,5 +55,4 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
         @Query(value = "SELECT procesar_compra(:userId, :paymentType)", nativeQuery = true)
         Long procesarCompra(@Param("userId") Long userId,
                             @Param("paymentType") String paymentType);
-
 }

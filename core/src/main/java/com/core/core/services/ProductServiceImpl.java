@@ -113,21 +113,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product consultarProductoFunction(Long code) {
-
-        StoredProcedureQuery query = entityManager
-                .createStoredProcedureQuery("consultar_producto", Product.class);
-
-        query.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
-        query.setParameter(1, code);
-
-        return (Product) query.getSingleResult();
+        return (Product) entityManager
+                .createNativeQuery("SELECT * FROM consultar_producto(:code)", Product.class)
+                .setParameter("code", code)
+                .getSingleResult();
     }
 
     @Override
     public List<Product> listarProductosProcedure() {
-        // El procedure LISTAR_PRODUCTOS solo usa DBMS_OUTPUT,
-        // por lo tanto retornamos todos los productos desde JPA.
-        return productRepository.findAll();
+        return entityManager
+                .createNativeQuery("SELECT * FROM listar_productos()", Product.class)
+                .getResultList();
     }
-
 }
