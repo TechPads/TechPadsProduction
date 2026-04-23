@@ -1,9 +1,9 @@
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
+COPY core/.mvn/ .mvn/
+COPY core/mvnw core/pom.xml ./
 RUN chmod +x mvnw && ./mvnw dependency:go-offline
-COPY src/ src/
+COPY core/src/ src/
 RUN ./mvnw package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
