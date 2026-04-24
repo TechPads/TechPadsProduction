@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/techPads/store/v1'
+  apiUrl: 'https://delivery-shop-production.up.railway.app/techPads/store/v1'
 };
