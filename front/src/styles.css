@@ -8,3 +8,53 @@ body {
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* ============================================
+   RESPONSIVE GLOBAL - Media Queries
+   ============================================ */
+
+/* Tablet: 768px - 1024px */
+@media screen and (max-width: 1024px) {
+  .title {
+    font-size: 3rem;
+  }
+  
+  .bottom-bar {
+    padding: 25px 40px;
+  }
+}
+
+/* Mobile Large: 576px - 767px */
+@media screen and (max-width: 767px) {
+  .title {
+    font-size: 2rem;
+    letter-spacing: -1px;
+  }
+  
+  .bottom-bar {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .actions {
+    align-items: center;
+  }
+  
+  .btn-ingresar {
+    width: 100%;
+    max-width: 250px;
+  }
+}
+
+/* Mobile: < 576px */
+@media screen and (max-width: 575px) {
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .register-text {
+    font-size: 0.85rem;
+  }
+}

@@ -25,7 +25,7 @@
   <app-login
     *ngIf="showLogin"
     (close)="closeModals()"
-    (openRegisterModal)="switchToRegister()"
+    (switchToRegister)="switchToRegister()"
   ></app-login>
   <app-register
     *ngIf="showRegister"

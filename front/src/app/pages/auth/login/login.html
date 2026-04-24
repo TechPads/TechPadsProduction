@@ -67,7 +67,7 @@
 
       <div class="login-footer">
         <p>¿No tienes una cuenta? 
-          <a (click)="goToRegister()" class="link-register">Regístrate aquí</a>
+          <a (click)="goToRegister(); $event.stopPropagation()" class="link-register">Regístrate aquí</a>
         </p>
       </div>
     </div>

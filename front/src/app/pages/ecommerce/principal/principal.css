@@ -207,6 +207,120 @@ body, html {
   text-decoration: underline;
 }
 
+/* ============================================
+   RESPONSIVE - Media Queries
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .title {
+    font-size: 3rem;
+  }
+  
+  .bottom-bar {
+    padding: 25px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.25rem;
+    letter-spacing: -1px;
+  }
+  
+  .bottom-bar {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 25px;
+    text-align: center;
+  }
+  
+  .actions {
+    align-items: center;
+    width: 100%;
+  }
+  
+  .btn-ingresar {
+    width: 100%;
+    max-width: 280px;
+    padding: 14px 25px;
+  }
+  
+  .register-text {
+    font-size: 0.85rem;
+  }
+  
+  .modal-content {
+    width: 90%;
+    max-width: 400px;
+    padding: 25px;
+  }
+  
+  .modal-content h2 {
+    font-size: 1rem;
+  }
+  
+  .modal-content input {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .btn-entrar {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .bottom-bar {
+    padding: 15px 20px;
+    gap: 15px;
+  }
+  
+  .btn-ingresar {
+    max-width: 100%;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .register-text {
+    font-size: 0.8rem;
+  }
+  
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .modal-content h2 {
+    font-size: 0.9rem;
+  }
+  
+  .input-label label {
+    font-size: 0.8rem;
+  }
+  
+  .modal-content input {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+  
+  .btn-entrar {
+    padding: 12px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+  
+  .register-link {
+    font-size: 0.8rem;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

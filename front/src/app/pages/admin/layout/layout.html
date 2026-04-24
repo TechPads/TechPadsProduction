@@ -1,6 +1,12 @@
 <div class="admin-container">
   <!-- Header -->
   <header class="header">
+    <!-- Mobile menu button -->
+    <button class="menu-btn" (click)="toggleSidebar()">
+      <span class="hamburger"></span>
+      <span class="hamburger"></span>
+      <span class="hamburger"></span>
+    </button>
     <div class="header-actions">
       <button class="icon-btn profile-btn" (click)="goTo('/admin/dashboard')" aria-label="Perfil">
         <div
@@ -18,8 +24,11 @@
 
   <!-- Main Content -->
   <div class="main-content">
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" [class.open]="sidebarOpen" (click)="toggleSidebar()"></div>
+    
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" [class.open]="sidebarOpen">
       <div class="sidebar-header">
         <h2>Panel Admin</h2>
       </div>

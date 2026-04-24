@@ -12,8 +12,13 @@ import { AuthService } from '../../../services/auth.service';
 export class AdminLayoutComponent {
   inventarioExpanded = false;
   productosExpanded = false;
+  sidebarOpen = false;
 
   constructor(public router: Router, private authService: AuthService) {}
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
 
   toggleInventario(): void {
     this.inventarioExpanded = !this.inventarioExpanded;

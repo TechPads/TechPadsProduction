@@ -301,6 +301,43 @@
   }
 }
 
+@media (max-width: 480px) {
+  .modal-register {
+    border-radius: 12px;
+  }
+  
+  .register-right {
+    padding: 20px 15px;
+  }
+  
+  .register-left {
+    padding: 20px 15px;
+  }
+  
+  .register-illustration {
+    height: 80px;
+  }
+  
+  .form-grid {
+    gap: 10px;
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .btn-register {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}
+
 /* Estilos para validación */
 .input-label {
   position: relative;
